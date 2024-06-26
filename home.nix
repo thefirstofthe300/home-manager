@@ -18,6 +18,11 @@
       tenv
       zsh-powerlevel10k
       zsh-you-should-use
+      (nerdfonts.override { fonts = [ "FiraCode" "Meslo" ]; })
+      terraform-docs
+      tflint
+      tfsec
+      aws-iam-authenticator
     ];
     file = {
       p10k = {
@@ -30,8 +35,34 @@
     };
   };
 
+  fonts = {
+    fontconfig = {
+      enable = true;
+      defaultFonts = {
+        monospace = [ 
+          "FiraCode Nerd Font Mono" 
+        ];
+      };
+    };
+  };
+
   programs = {
     home-manager.enable = true;
+    git = {
+      enable = true;
+      userName = "Danny Seymour";
+      userEmail = "danny@seymour.family";
+      signing = {
+        signByDefault = true;
+        key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBLs1zuIf732rfBMxwN6ly3bWM+xNqPiw5ahLpTvVj7k";
+      };
+
+      extraConfig = {
+        gpg = {
+          format = "ssh";
+        };
+      };
+    };
     vim = {
       enable = true;
       defaultEditor = true;
@@ -56,11 +87,12 @@
       initExtra = ''
         export SSH_AUTH_SOCK="$HOME/.1password/agent.sock"
         source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme
+        source ${config.home.homeDirectory}/.p10k.zsh
       '';
 
       shellAliases = {
         ll = "ls -l";
-        update = "sudo nixos-rebuild switch";
+        update = "home-manager switch";
       };
       history = {
         size = 10000;
