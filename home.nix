@@ -14,6 +14,7 @@
 
     packages = with pkgs; [
       kubectl
+      krew
       kubernetes-helm
       fluxcd
       tenv
@@ -24,6 +25,13 @@
       tflint
       tfsec
       aws-iam-authenticator
+      noto-fonts
+      nixpkgs-fmt
+      istioctl
+      clusterctl
+      helm-docs
+      kind
+      operator-sdk
     ];
     file = {
       p10k = {
@@ -31,18 +39,35 @@
         source = ./p10k.zsh;
       };
     };
+    sessionPath = [
+      "/home/dseymour/.krew/bin"
+    ];
     sessionVariables = {
       TENV_AUTO_INSTALL = "true";
     };
   };
 
+
   fonts = {
     fontconfig = {
       enable = true;
       defaultFonts = {
-        monospace = [ 
-          "FiraCode Nerd Font Mono" 
+        monospace = [
+          "FiraCode Nerd Font Mono"
         ];
+      };
+    };
+  };
+
+  dconf = {
+    settings = {
+      "org/gnome/desktop/interface" = {
+        gtk-theme = "Adwaita-dark";
+        icon-theme = "Adwaita";
+        cursor-theme = "Adwaita";
+        font-name = "Noto Sans 11";
+        document-font-name = "Noto Serif 11";
+        monospace-font-name = "FiraCode Nerd Font Mono 10";
       };
     };
   };
@@ -89,6 +114,10 @@
         export SSH_AUTH_SOCK="$HOME/.1password/agent.sock"
         source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme
         source ${config.home.homeDirectory}/.p10k.zsh
+        source ${config.home.homeDirectory}/.config/op/plugins.sh
+
+        bindkey "^[[1;5C" forward-word
+        bindkey "^[[1;5D" backward-word
       '';
 
       shellAliases = {
