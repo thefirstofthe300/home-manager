@@ -1,5 +1,7 @@
 { config, pkgs, ... }:
 {
+  nixpkgs.config.allowUnfreePredicate = (pkg: true);
+
   home = {
     username = "dseymour";
     homeDirectory = "/home/dseymour";
@@ -13,6 +15,8 @@
     stateVersion = "24.05";
 
     packages = with pkgs; [
+      velero
+      talosctl
       kubectl
       krew
       kubernetes-helm
@@ -26,12 +30,20 @@
       tfsec
       aws-iam-authenticator
       noto-fonts
-      nixpkgs-fmt
       istioctl
       clusterctl
       helm-docs
       kind
       operator-sdk
+      (vscode-with-extensions.override {
+        vscodeExtensions = with vscode-extensions; [
+          jnoortheen.nix-ide
+          ms-azuretools.vscode-docker
+          redhat.vscode-yaml
+        ];
+      })
+      nixpkgs-fmt
+      direnv
     ];
     file = {
       p10k = {
@@ -139,6 +151,11 @@
           src = "${pkgs.zsh-you-should-use}/share/zsh/plugins/you-should-use";
         }
       ];
+    };
+    direnv = {
+      enable = true;
+      enableBashIntegration = true;
+      enableZshIntegration = true;
     };
   };
 }
