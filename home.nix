@@ -40,10 +40,14 @@
           jnoortheen.nix-ide
           ms-azuretools.vscode-docker
           redhat.vscode-yaml
+          golang.go
         ];
       })
       nixpkgs-fmt
       direnv
+      go
+      gopls
+      delve
     ];
     file = {
       p10k = {
@@ -156,6 +160,9 @@
       enable = true;
       enableBashIntegration = true;
       enableZshIntegration = true;
+    };
+    helix = {
+      enable = true;
     };
   };
 }
