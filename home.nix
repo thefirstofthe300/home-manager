@@ -48,6 +48,7 @@
       go
       gopls
       delve
+      minikube
     ];
     file = {
       p10k = {
