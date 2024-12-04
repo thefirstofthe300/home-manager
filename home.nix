@@ -41,6 +41,7 @@
           ms-azuretools.vscode-docker
           redhat.vscode-yaml
           golang.go
+          mkhl.direnv
         ];
       })
       nixpkgs-fmt
