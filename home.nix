@@ -45,7 +45,8 @@
           mkhl.direnv
         ];
       })
-      nixpkgs-fmt
+      nil
+      nixfmt
       direnv
       go
       gopls
