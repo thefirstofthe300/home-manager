@@ -24,7 +24,8 @@
       tenv
       zsh-powerlevel10k
       zsh-you-should-use
-      (nerdfonts.override { fonts = [ "FiraCode" "Meslo" ]; })
+      nerd-fonts.fira-code
+      meslo-lgs-nf
       terraform-docs
       tflint
       tfsec
@@ -50,6 +51,7 @@
       gopls
       delve
       minikube
+      kubeseal
     ];
     file = {
       p10k = {
