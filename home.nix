@@ -46,7 +46,7 @@
         ];
       })
       nil
-      nixfmt
+      nixfmt-classic
       direnv
       go
       gopls
