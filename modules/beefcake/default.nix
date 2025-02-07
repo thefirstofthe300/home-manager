@@ -1,6 +1,8 @@
 { pkgs, ... }: {
   nixpkgs.config.allowUnfreePredicate = (pkg: true);
 
+  imports = [ ./packages.nix ];
+
   home = {
     username = "dseymour";
     homeDirectory = "/home/dseymour";
@@ -27,11 +29,22 @@
           redhat.vscode-yaml
           golang.go
           mkhl.direnv
+          rust-lang.rust-analyzer
         ];
       })
       nil
       nixfmt-classic
       direnv
+      tenv
+      terraform-docs
+      tflint
+      tfsec
+      aws-iam-authenticator
+      istioctl
+      clusterctl
+      helm-docs
+      kind
+      minikube
     ];
     sessionVariables = { TENV_AUTO_INSTALL = "true"; };
   };
