@@ -1,8 +1,6 @@
 { pkgs, ... }: {
   nixpkgs.config.allowUnfreePredicate = (pkg: true);
 
-  imports = [ ./packages.nix ];
-
   home = {
     username = "dseymour";
     homeDirectory = "/home/dseymour";
