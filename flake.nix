@@ -8,22 +8,34 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nixgl.url = "github:nix-community/nixGL";
   };
 
-  outputs = { nixpkgs, home-manager, ... }:
+  outputs = { nixpkgs, home-manager, nixgl, ... }:
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
     in {
-      homeConfigurations."dseymour" = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
+      homeConfigurations = {
+        "dseymour@falcon" = home-manager.lib.homeManagerConfiguration {
+          inherit pkgs;
 
-        # Specify your home configuration modules here, for example,
-        # the path to your home.nix.
-        modules = [ ./home.nix ];
+          extraSpecialArgs = { inherit nixgl; };
 
-        # Optionally use extraSpecialArgs
-        # to pass through arguments to home.nix
+          modules = [ ./modules/falcon ./modules/common ];
+        };
+
+        "dseymour@beefcake" = home-manager.lib.homeManagerConfiguration {
+          inherit pkgs;
+
+          extraSpecialArgs = { inherit nixgl; };
+
+          modules = [
+            ./modules/beefcake.nix
+            ./modules/common/terminal.nix
+            ./modules/common/zsh.nix
+          ];
+        };
       };
     };
 }
