@@ -32,22 +32,19 @@
       nil
       nixfmt-classic
       direnv
-      kubeseal
     ];
-    file = {
-      p10k = {
-        target = ".p10k.zsh";
-        source = ./p10k.zsh;
-      };
-    };
-    sessionPath = [ "/home/dseymour/.krew/bin" ];
     sessionVariables = { TENV_AUTO_INSTALL = "true"; };
   };
 
   fonts = {
     fontconfig = {
       enable = true;
-      defaultFonts = { monospace = [ "FiraCode Nerd Font Mono" ]; };
+      defaultFonts = {
+        emoji = [ "Noto Emoji" ];
+        serif = [ "Noto Serif" ];
+        sansSerif = [ "Noto Sans" ];
+        monospace = [ "FiraCode Nerd Font Mono" ];
+      };
     };
   };
 
@@ -82,6 +79,18 @@
       enable = true;
       enableBashIntegration = true;
       enableZshIntegration = true;
+    };
+  };
+
+  services = {
+    flatpak = {
+      enable = true;
+      packages = [
+        "com.slack.Slack"
+        "com.spotify.Client"
+        "com.github.tchx84.Flatseal"
+        "net.nokyan.Resources"
+      ];
     };
   };
 }

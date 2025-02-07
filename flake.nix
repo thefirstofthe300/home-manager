@@ -9,9 +9,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixgl.url = "github:nix-community/nixGL";
+    nix-flatpak.url = "github:gmodena/nix-flatpak";
   };
 
-  outputs = { nixpkgs, home-manager, nixgl, ... }:
+  outputs = { nixpkgs, home-manager, nixgl, nix-flatpak, ... }:
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
@@ -22,7 +23,11 @@
 
           extraSpecialArgs = { inherit nixgl; };
 
-          modules = [ ./modules/falcon ./modules/common ];
+          modules = [
+            ./modules/falcon
+            ./modules/common
+            nix-flatpak.homeManagerModules.nix-flatpak
+          ];
         };
 
         "dseymour@beefcake" = home-manager.lib.homeManagerConfiguration {
@@ -31,9 +36,9 @@
           extraSpecialArgs = { inherit nixgl; };
 
           modules = [
-            ./modules/beefcake.nix
-            ./modules/common/terminal.nix
-            ./modules/common/zsh.nix
+            ./modules/beefcake
+            ./modules/common
+            nix-flatpak.homeManagerModules.nix-flatpak
           ];
         };
       };

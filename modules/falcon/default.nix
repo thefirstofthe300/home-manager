@@ -37,7 +37,12 @@
   fonts = {
     fontconfig = {
       enable = true;
-      defaultFonts = { monospace = [ "FiraCode Nerd Font Mono" ]; };
+      defaultFonts = {
+        emoji = [ "Noto Emoji" ];
+        serif = [ "Noto Serif" ];
+        sansSerif = [ "Noto Sans" ];
+        monospace = [ "FiraCode Nerd Font Mono" ];
+      };
     };
   };
 
@@ -67,6 +72,17 @@
       };
 
       extraConfig = { gpg = { format = "ssh"; }; };
+    };
+  };
+
+  services = {
+    flatpak = {
+      enable = true;
+      packages = [
+        "com.spotify.Client"
+        "com.github.tchx84.Flatseal"
+        "net.nokyan.Resources"
+      ];
     };
   };
 }
