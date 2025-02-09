@@ -82,6 +82,7 @@
         "com.spotify.Client"
         "com.github.tchx84.Flatseal"
         "net.nokyan.Resources"
+        "im.riot.Riot"
       ];
     };
   };
