@@ -27,7 +27,9 @@
           redhat.vscode-yaml
           golang.go
           mkhl.direnv
+          ms-vscode.makefile-tools
           rust-lang.rust-analyzer
+          hashicorp.terraform
         ];
       })
       nil
