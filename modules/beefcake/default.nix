@@ -30,6 +30,7 @@
           ms-vscode.makefile-tools
           rust-lang.rust-analyzer
           hashicorp.terraform
+          github.copilot
         ];
       })
       nil
