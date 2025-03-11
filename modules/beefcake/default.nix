@@ -46,6 +46,7 @@
       helm-docs
       kind
       minikube
+      circleci-cli
     ];
     sessionVariables = { TENV_AUTO_INSTALL = "true"; };
   };
@@ -77,6 +78,7 @@
 
   programs = {
     home-manager.enable = true;
+    jqp.enable = true;
     git = {
       enable = true;
       userName = "Danny Seymour";
