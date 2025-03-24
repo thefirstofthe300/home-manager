@@ -31,6 +31,7 @@
           rust-lang.rust-analyzer
           hashicorp.terraform
           github.copilot
+          github.copilot-chat
         ];
       })
       nil
