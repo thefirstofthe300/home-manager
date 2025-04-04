@@ -9,4 +9,14 @@
     zsh-powerlevel10k
     zsh-you-should-use
   ];
+  services = {
+    home-manager = {
+      autoExpire = {
+        enable = true;
+        store = {
+          cleanup = true;
+        };
+      };
+    };
+  };
 }
