@@ -32,6 +32,7 @@
           hashicorp.terraform
           github.copilot
           github.copilot-chat
+          stkb.rewrap
         ];
       })
       nil
@@ -48,6 +49,13 @@
       kind
       minikube
       circleci-cli
+      cargo
+      ripgrep
+      protobuf
+      go
+      cyclonedx-gomod
+      diffoci
+      regctl
     ];
     sessionVariables = { TENV_AUTO_INSTALL = "true"; };
   };
