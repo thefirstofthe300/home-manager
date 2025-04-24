@@ -56,6 +56,11 @@
       cyclonedx-gomod
       diffoci
       regctl
+      (
+        google-cloud-sdk.withExtraComponents([
+          google-cloud-sdk.components.gke-gcloud-auth-plugin
+        ])
+      )
     ];
     sessionVariables = { TENV_AUTO_INSTALL = "true"; };
   };
@@ -66,8 +71,8 @@
       defaultFonts = {
         emoji = [ "Noto Emoji" ];
         serif = [ "Noto Serif" ];
-        sansSerif = [ "Noto Sans" ];
-        monospace = [ "FiraCode Nerd Font Mono" ];
+        sansSerif = [ "Adwaita Sans" ];
+        monospace = [ "Adwaita Mono" ];
       };
     };
   };
@@ -78,9 +83,9 @@
         gtk-theme = "Adwaita-dark";
         icon-theme = "Adwaita";
         cursor-theme = "Adwaita";
-        font-name = "Noto Sans 11";
+        font-name = "Adwaita Sans 11";
         document-font-name = "Noto Serif 11";
-        monospace-font-name = "FiraCode Nerd Font Mono 10";
+        monospace-font-name = "Adwaita Mono 10";
       };
     };
   };
