@@ -8,7 +8,7 @@
       autosuggestion.enable = true;
       syntaxHighlighting.enable = true;
 
-      initExtra = ''
+      initContent = ''
         export TENV_DETACHED_PROXY=false
         export SSH_AUTH_SOCK="$HOME/.1password/agent.sock"
         source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme
