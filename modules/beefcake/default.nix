@@ -121,6 +121,7 @@
         "com.github.tchx84.Flatseal"
         "net.nokyan.Resources"
         "im.riot.Riot"
+        "us.zoom.Zoom"
       ];
     };
   };
