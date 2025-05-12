@@ -33,6 +33,14 @@
           github.copilot
           github.copilot-chat
           stkb.rewrap
+          visualstudioexptteam.vscodeintellicode
+          redhat.java
+          vscjava.vscode-java-debug
+          vscjava.vscode-java-test
+          vscjava.vscode-java-dependency
+          vscjava.vscode-gradle
+          ms-python.python
+          ms-python.black-formatter
         ];
       })
       nil
@@ -53,6 +61,7 @@
       ripgrep
       protobuf
       go
+      python3
       cyclonedx-gomod
       diffoci
       regctl
