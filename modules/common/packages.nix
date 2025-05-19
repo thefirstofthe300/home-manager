@@ -9,6 +9,7 @@
     zsh-powerlevel10k
     zsh-you-should-use
   ];
+  home.enableNixpkgsReleaseCheck = false;
   services = {
     home-manager = {
       autoExpire = {
