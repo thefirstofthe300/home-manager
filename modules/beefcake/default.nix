@@ -41,6 +41,13 @@
           vscjava.vscode-gradle
           ms-python.python
           ms-python.black-formatter
+        ] ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
+          {
+            name = "circleci";
+            publisher = "circleci";
+            version = "2.10.1";
+            sha256 = "yQuL4nunX8XkAurbw5ks78jU8zyxkOuy4Row0TK51SY=";
+          } 
         ];
       })
       nil
