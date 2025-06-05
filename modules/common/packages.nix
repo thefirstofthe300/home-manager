@@ -8,6 +8,9 @@
     noto-fonts
     zsh-powerlevel10k
     zsh-you-should-use
+    gnomeExtensions.clipboard-history
+    gnomeExtensions.caffeine
+    gnomeExtensions.appindicator
   ];
   home.enableNixpkgsReleaseCheck = false;
   services = {

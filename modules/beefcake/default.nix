@@ -41,6 +41,7 @@
           vscjava.vscode-gradle
           ms-python.python
           ms-python.black-formatter
+          ms-vscode-remote.remote-containers
         ] ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
           {
             name = "circleci";
@@ -68,6 +69,7 @@
       ripgrep
       protobuf
       go
+      goreleaser
       python3
       cyclonedx-gomod
       diffoci
