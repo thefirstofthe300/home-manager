@@ -42,6 +42,7 @@
           ms-python.python
           ms-python.black-formatter
           ms-vscode-remote.remote-containers
+          ms-vscode-remote.remote-ssh
         ] ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
           {
             name = "circleci";
