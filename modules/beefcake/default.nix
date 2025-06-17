@@ -1,5 +1,7 @@
 { pkgs, ... }: {
-  nixpkgs.config.allowUnfreePredicate = (pkg: true);
+  nixpkgs.config = {
+    allowUnfreePredicate = (pkg: true);
+  };
 
   home = {
     username = "dseymour";
