@@ -1,7 +1,5 @@
 { pkgs, ... }: {
-  nixpkgs.config = {
-    allowUnfreePredicate = (pkg: true);
-  };
+  nixpkgs.config = { allowUnfreePredicate = (pkg: true); };
 
   home = {
     username = "dseymour";
@@ -23,36 +21,35 @@
       meslo-lgs-nf
       noto-fonts
       (vscode-with-extensions.override {
-        vscodeExtensions = with vscode-extensions; [
-          jnoortheen.nix-ide
-          ms-azuretools.vscode-docker
-          redhat.vscode-yaml
-          golang.go
-          mkhl.direnv
-          ms-vscode.makefile-tools
-          rust-lang.rust-analyzer
-          hashicorp.terraform
-          github.copilot
-          github.copilot-chat
-          stkb.rewrap
-          visualstudioexptteam.vscodeintellicode
-          redhat.java
-          vscjava.vscode-java-debug
-          vscjava.vscode-java-test
-          vscjava.vscode-java-dependency
-          vscjava.vscode-gradle
-          ms-python.python
-          ms-python.black-formatter
-          ms-vscode-remote.remote-containers
-          ms-vscode-remote.remote-ssh
-        ] ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
-          {
+        vscodeExtensions = with vscode-extensions;
+          [
+            jnoortheen.nix-ide
+            ms-azuretools.vscode-docker
+            redhat.vscode-yaml
+            golang.go
+            mkhl.direnv
+            ms-vscode.makefile-tools
+            rust-lang.rust-analyzer
+            hashicorp.terraform
+            github.copilot
+            github.copilot-chat
+            stkb.rewrap
+            visualstudioexptteam.vscodeintellicode
+            redhat.java
+            vscjava.vscode-java-debug
+            vscjava.vscode-java-test
+            vscjava.vscode-java-dependency
+            vscjava.vscode-gradle
+            ms-python.python
+            ms-python.black-formatter
+            ms-vscode-remote.remote-containers
+            ms-vscode-remote.remote-ssh
+          ] ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [{
             name = "circleci";
             publisher = "circleci";
             version = "2.10.1";
             sha256 = "yQuL4nunX8XkAurbw5ks78jU8zyxkOuy4Row0TK51SY=";
-          } 
-        ];
+          }];
       })
       nil
       nixfmt-classic
@@ -77,11 +74,8 @@
       cyclonedx-gomod
       diffoci
       regctl
-      (
-        google-cloud-sdk.withExtraComponents([
-          google-cloud-sdk.components.gke-gcloud-auth-plugin
-        ])
-      )
+      (google-cloud-sdk.withExtraComponents
+        ([ google-cloud-sdk.components.gke-gcloud-auth-plugin ]))
     ];
     sessionVariables = { TENV_AUTO_INSTALL = "true"; };
   };
@@ -124,7 +118,10 @@
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBLs1zuIf732rfBMxwN6ly3bWM+xNqPiw5ahLpTvVj7k";
       };
 
-      extraConfig = { gpg = { format = "ssh"; }; };
+      extraConfig = {
+        gpg = { format = "ssh"; };
+        http = { cookieFile = "~/.gitcookies"; };
+      };
     };
     direnv = {
       enable = true;
