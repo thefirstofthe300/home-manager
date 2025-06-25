@@ -32,7 +32,6 @@
             rust-lang.rust-analyzer
             hashicorp.terraform
             github.copilot
-            github.copilot-chat
             stkb.rewrap
             visualstudioexptteam.vscodeintellicode
             redhat.java
@@ -49,6 +48,12 @@
             publisher = "circleci";
             version = "2.10.1";
             sha256 = "yQuL4nunX8XkAurbw5ks78jU8zyxkOuy4Row0TK51SY=";
+          }
+          {
+            name = "copilot-chat";
+            publisher = "github";
+            version = "0.28.1";
+            sha256 = "xOv1JYhE9Q8zRXoZVs/W1U58+SdbJwR5y354LLfKeDQ=";
           }];
       })
       nil
