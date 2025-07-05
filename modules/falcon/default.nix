@@ -29,6 +29,7 @@
       nixfmt-classic
       direnv
       kubeseal
+      kind
     ];
     sessionPath = [ "/home/dseymour/.krew/bin" ];
     sessionVariables = { TENV_AUTO_INSTALL = "true"; };
