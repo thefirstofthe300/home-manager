@@ -20,6 +20,7 @@
       nerd-fonts.fira-code
       meslo-lgs-nf
       noto-fonts
+      source-meta-json-schema
 #      (vscode-with-extensions.override {
 #        vscodeExtensions = with vscode-extensions;
 #          [

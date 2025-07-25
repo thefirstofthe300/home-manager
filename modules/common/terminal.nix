@@ -3,7 +3,7 @@
 
   programs = {
     ghostty = {
-      enable = false;
+      enable = true;
       package = (config.lib.nixGL.wrap pkgs.ghostty);
       enableZshIntegration = true;
       settings = {
