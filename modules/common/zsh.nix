@@ -9,6 +9,7 @@
       syntaxHighlighting.enable = true;
 
       initContent = ''
+        export PATH="$PATH:${config.home.homeDirectory}/.local/bin"
         export TENV_DETACHED_PROXY=false
         export SSH_AUTH_SOCK="$HOME/.1password/agent.sock"
         source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme
