@@ -8,7 +8,16 @@
     noto-fonts
     zsh-powerlevel10k
     zsh-you-should-use
+    signal-desktop
   ];
+  xdg = {
+    autostart = {
+      enable = true;
+      entries = [
+        "${pkgs.signal-desktop}/share/applications/signal.desktop"
+      ];
+    };
+  };
   services = {
     home-manager = {
       autoExpire = {
