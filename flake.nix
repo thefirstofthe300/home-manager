@@ -3,7 +3,7 @@
 
   inputs = {
     # Specify the source of Home Manager and Nixpkgs.
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -37,6 +37,18 @@
 
           modules = [
             ./modules/beefcake
+            ./modules/common
+            nix-flatpak.homeManagerModules.nix-flatpak
+          ];
+        };
+
+        "dseymour@iron-man" = home-manager.lib.homeManagerConfiguration {
+          inherit pkgs;
+
+          extraSpecialArgs = { inherit nixgl; };
+
+          modules = [
+            ./modules/iron-man
             ./modules/common
             nix-flatpak.homeManagerModules.nix-flatpak
           ];
