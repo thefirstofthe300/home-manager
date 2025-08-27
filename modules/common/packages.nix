@@ -1,15 +1,18 @@
 { pkgs, ... }: {
-  home.packages = with pkgs; [
-    kubectl
-    kubernetes-helm
-    fluxcd
-    nerd-fonts.fira-code
-    meslo-lgs-nf
-    noto-fonts
-    zsh-powerlevel10k
-    zsh-you-should-use
-    signal-desktop
-  ];
+  home = {
+    packages = with pkgs; [
+      kubectl
+      kubernetes-helm
+      fluxcd
+      nerd-fonts.fira-code
+      meslo-lgs-nf
+      noto-fonts
+      zsh-powerlevel10k
+      zsh-you-should-use
+      signal-desktop
+    ];
+    enableNixpkgsReleaseCheck = false;
+  };
   xdg = {
     autostart = {
       enable = true;
