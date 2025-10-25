@@ -64,8 +64,10 @@
     home-manager.enable = true;
     git = {
       enable = true;
-      userName = "Danny Seymour";
-      userEmail = "danny@seymour.family";
+      user = {
+        name = "Danny Seymour";
+        email = "danny@seymour.family";
+      };
       signing = {
         signByDefault = true;
         key =
