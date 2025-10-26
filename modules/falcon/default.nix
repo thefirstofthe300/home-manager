@@ -64,17 +64,21 @@
     home-manager.enable = true;
     git = {
       enable = true;
-      user = {
-        name = "Danny Seymour";
-        email = "danny@seymour.family";
-      };
-      signing = {
-        signByDefault = true;
-        key =
-          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBLs1zuIf732rfBMxwN6ly3bWM+xNqPiw5ahLpTvVj7k";
-      };
-
-      extraConfig = { gpg = { format = "ssh"; }; };
+      includes = [{
+        contents = {
+          user = {
+            name = "Danny Seymour";
+            email = "danny@seymour.family";
+            signingKey =
+              "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBLs1zuIf732rfBMxwN6ly3bWM+xNqPiw5ahLpTvVj7k";
+          };
+          commit = { gpgSign = true; };
+          signing = {
+            signByDefault = true;
+            format = "ssh";
+          };
+        };
+      }];
     };
   };
 
