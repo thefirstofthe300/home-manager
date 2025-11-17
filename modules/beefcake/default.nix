@@ -119,18 +119,21 @@
     jqp.enable = true;
     git = {
       enable = true;
-      userName = "Danny Seymour";
-      userEmail = "danny.seymour@gremlin.com";
-      signing = {
-        signByDefault = true;
-        key =
-          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBLs1zuIf732rfBMxwN6ly3bWM+xNqPiw5ahLpTvVj7k";
-      };
-
-      extraConfig = {
-        gpg = { format = "ssh"; };
-        http = { cookieFile = "~/.gitcookies"; };
-      };
+      includes = [{
+        contents = {
+          user = {
+            name = "Danny Seymour";
+            email = "danny.seymour@gremlin.com";
+            signingKey =
+              "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBLs1zuIf732rfBMxwN6ly3bWM+xNqPiw5ahLpTvVj7k";
+          };
+          commit = { gpgSign = true; };
+          signing = {
+            signByDefault = true;
+            format = "ssh";
+          };
+        };
+      }];
     };
     direnv = {
       enable = true;
