@@ -94,7 +94,7 @@
       enable = true;
       defaultFonts = {
         emoji = [ "Noto Emoji" ];
-        serif = [ "Noto Serif" ];
+        serif = [ "Adwaita Sans" ];
         sansSerif = [ "Adwaita Sans" ];
         monospace = [ "Adwaita Mono" ];
       };
