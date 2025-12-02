@@ -1,6 +1,4 @@
-{ config, pkgs, nixgl, ... }: {
-  nixGL.packages = nixgl.packages;
-
+{ config, pkgs,  ... }: {
   programs = {
     zsh = {
       enable = true;

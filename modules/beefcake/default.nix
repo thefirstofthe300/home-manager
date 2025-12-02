@@ -83,10 +83,13 @@
       regctl
       (google-cloud-sdk.withExtraComponents
         ([ google-cloud-sdk.components.gke-gcloud-auth-plugin ]))
-      aws-sam-cli
       kyverno-chainsaw
     ];
     sessionVariables = { TENV_AUTO_INSTALL = "true"; };
+  };
+
+  targets.genericLinux = {
+    enable = true;
   };
 
   fonts = {
@@ -108,7 +111,7 @@
         icon-theme = "Adwaita";
         cursor-theme = "Adwaita";
         font-name = "Adwaita Sans 11";
-        document-font-name = "Noto Serif 11";
+        document-font-name = "Adwaita Sans 11";
         monospace-font-name = "Adwaita Mono 10";
       };
     };
@@ -127,10 +130,12 @@
             signingKey =
               "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBLs1zuIf732rfBMxwN6ly3bWM+xNqPiw5ahLpTvVj7k";
           };
+          gpg = {
+            format = "ssh";
+          };
           commit = { gpgSign = true; };
           signing = {
             signByDefault = true;
-            format = "ssh";
           };
         };
       }];
@@ -152,6 +157,7 @@
         "net.nokyan.Resources"
         "im.riot.Riot"
         "us.zoom.Zoom"
+        "com.fastmail.Fastmail"
       ];
     };
   };
