@@ -1,4 +1,9 @@
 { pkgs, ... }: {
+  nix = {
+    gc = {
+      automatic = true;
+    };
+  };
   nixpkgs.config = { allowUnfreePredicate = (pkg: true); };
 
   home = {
@@ -83,7 +88,6 @@
       regctl
       (google-cloud-sdk.withExtraComponents
         ([ google-cloud-sdk.components.gke-gcloud-auth-plugin ]))
-      kyverno-chainsaw
     ];
     sessionVariables = { TENV_AUTO_INSTALL = "true"; };
   };
