@@ -16,17 +16,6 @@
     packages = with pkgs; [
       velero
       talosctl
-      (vscode-with-extensions.override {
-        vscodeExtensions = with vscode-extensions; [
-          jnoortheen.nix-ide
-          ms-azuretools.vscode-docker
-          redhat.vscode-yaml
-          golang.go
-          mkhl.direnv
-        ];
-      })
-      nil
-      nixfmt-classic
       direnv
       kubeseal
       kind
@@ -47,19 +36,6 @@
     };
   };
 
-  dconf = {
-    settings = {
-      "org/gnome/desktop/interface" = {
-        gtk-theme = "Adwaita-dark";
-        icon-theme = "Adwaita";
-        cursor-theme = "Adwaita";
-        font-name = "Noto Sans 11";
-        document-font-name = "Noto Serif 11";
-        monospace-font-name = "FiraCode Nerd Font Mono 10";
-      };
-    };
-  };
-
   programs = {
     home-manager.enable = true;
     git = {
@@ -72,10 +48,14 @@
             signingKey =
               "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBLs1zuIf732rfBMxwN6ly3bWM+xNqPiw5ahLpTvVj7k";
           };
-          commit = { gpgSign = true; };
-          signing = {
-            signByDefault = true;
+          gpg = {
             format = "ssh";
+            ssh = {
+              program = "${pkgs._1password-gui}/share/1password/op-ssh-sign";
+            };
+          };
+          commit = { 
+            gpgSign = true; 
           };
         };
       }];

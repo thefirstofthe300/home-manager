@@ -10,6 +10,7 @@
       zsh-powerlevel10k
       zsh-you-should-use
       signal-desktop
+      gnupg
     ];
     enableNixpkgsReleaseCheck = false;
   };
