@@ -19,6 +19,7 @@
     stateVersion = "24.05";
 
     packages = with pkgs; [
+      tilt
       fluxcd
       zsh-powerlevel10k
       zsh-you-should-use
@@ -94,31 +95,6 @@
 
   targets.genericLinux = {
     enable = true;
-  };
-
-  fonts = {
-    fontconfig = {
-      enable = true;
-      defaultFonts = {
-        emoji = [ "Noto Emoji" ];
-        serif = [ "Adwaita Sans" ];
-        sansSerif = [ "Adwaita Sans" ];
-        monospace = [ "Adwaita Mono" ];
-      };
-    };
-  };
-
-  dconf = {
-    settings = {
-      "org/gnome/desktop/interface" = {
-        gtk-theme = "Adwaita-dark";
-        icon-theme = "Adwaita";
-        cursor-theme = "Adwaita";
-        font-name = "Adwaita Sans 11";
-        document-font-name = "Adwaita Sans 11";
-        monospace-font-name = "Adwaita Mono 10";
-      };
-    };
   };
 
   programs = {
