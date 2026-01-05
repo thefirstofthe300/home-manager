@@ -19,6 +19,8 @@
     stateVersion = "24.05";
 
     packages = with pkgs; [
+      jetbrains.idea
+      awscli2
       tilt
       fluxcd
       zsh-powerlevel10k
