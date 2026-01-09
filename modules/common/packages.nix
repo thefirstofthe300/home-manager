@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{ pkgs, config, ... }: {
   home = {
     packages = with pkgs; [
       kubectl
@@ -19,6 +19,8 @@
       enable = true;
       entries = [
         "${pkgs.signal-desktop}/share/applications/signal.desktop"
+        "${config.home.homeDirectory}/.local/share/flatpak/exports/share/applications/im.riot.Riot.desktop"
+        "${config.home.homeDirectory}/.local/share/flatpak/exports/share/applications/us.zoom.Zoom.desktop"
       ];
     };
   };

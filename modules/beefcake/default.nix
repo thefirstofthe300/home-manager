@@ -134,6 +134,12 @@
   services = {
     flatpak = {
       enable = true;
+      update = {
+        auto = {
+          enable = true;
+          onCalendar = "daily";
+        };
+      };
       packages = [
         "com.slack.Slack"
         "com.spotify.Client"
