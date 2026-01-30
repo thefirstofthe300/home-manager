@@ -19,6 +19,8 @@
     stateVersion = "24.05";
 
     packages = with pkgs; [
+      syft
+      goreleaser
       pre-commit
       helm-docs
       jetbrains.idea
