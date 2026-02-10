@@ -19,6 +19,7 @@
     stateVersion = "24.05";
 
     packages = with pkgs; [
+      commitizen
       syft
       goreleaser
       pre-commit
