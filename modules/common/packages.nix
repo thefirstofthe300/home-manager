@@ -1,9 +1,6 @@
 { pkgs, config, ... }: {
   home = {
     packages = with pkgs; [
-      kubectl
-      kubernetes-helm
-      fluxcd
       nerd-fonts.fira-code
       meslo-lgs-nf
       noto-fonts

@@ -1,19 +1,12 @@
-{ pkgs, ... }: {
+{ ... }: {
+  imports = [ ../profiles/personal.nix ];
+
   nixpkgs.config.allowUnfreePredicate = (pkg: true);
 
   home = {
     username = "dseymour";
     homeDirectory = "/home/dseymour";
-    # This value determines the Home Manager release that your configuration is
-    # compatible with. This helps avoid breakage when a new Home Manager release
-    # introduces backwards incompatible changes.
-    #
-    # You should not change this value, even if you update Home Manager. If you do
-    # want to update the value, then make sure to first check the Home Manager
-    # release notes.
     stateVersion = "24.05";
-
-    packages = with pkgs; [];
   };
 
   fonts = {
@@ -41,21 +34,7 @@
     };
   };
 
-  programs = {
-    home-manager.enable = true;
-    git = {
-      enable = true;
-      userName = "Danny Seymour";
-      userEmail = "danny@seymour.family";
-      signing = {
-        signByDefault = true;
-        key =
-          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBLs1zuIf732rfBMxwN6ly3bWM+xNqPiw5ahLpTvVj7k";
-      };
-
-      extraConfig = { gpg = { format = "ssh"; }; };
-    };
-  };
+  programs.home-manager.enable = true;
 
   services = {
     flatpak = {
