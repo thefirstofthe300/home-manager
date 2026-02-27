@@ -9,7 +9,6 @@
       noto-fonts
       zsh-powerlevel10k
       zsh-you-should-use
-      signal-desktop
       gnupg
     ];
     enableNixpkgsReleaseCheck = false;
@@ -18,9 +17,7 @@
     autostart = {
       enable = true;
       entries = [
-        "${pkgs.signal-desktop}/share/applications/signal.desktop"
         "${config.home.homeDirectory}/.local/share/flatpak/exports/share/applications/im.riot.Riot.desktop"
-        "${config.home.homeDirectory}/.local/share/flatpak/exports/share/applications/us.zoom.Zoom.desktop"
       ];
     };
   };

@@ -19,6 +19,8 @@
     stateVersion = "24.05";
 
     packages = with pkgs; [
+      claude-code
+      tex-fmt
       commitizen
       syft
       goreleaser
@@ -149,7 +151,6 @@
         "com.github.tchx84.Flatseal"
         "net.nokyan.Resources"
         "im.riot.Riot"
-        "us.zoom.Zoom"
         "com.fastmail.Fastmail"
       ];
     };
