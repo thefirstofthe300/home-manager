@@ -3,7 +3,11 @@
 
   myConfig.kubernetes.enable = true;
 
-  nixpkgs.config = { allowUnfreePredicate = (pkg: true); };
+  nixpkgs.config = { 
+    allowUnfree = true;
+    allowUnfreePredicate = (pkg: true);
+    nvidia.acceptLicense = true;
+  };
 
   home = {
     username = "dseymour";
@@ -20,7 +24,14 @@
   };
 
   targets.genericLinux = {
-    enable = true;
+    gpu ={
+      enable = true;
+      nvidia = {
+        enable = true;
+        version = "580.126.18";
+        sha256 = "sha256-p3gbLhwtZcZYCRTHbnntRU0ClF34RxHAMwcKCSqatJ0=";
+      };
+    };
   };
 
   programs.home-manager.enable = true;
