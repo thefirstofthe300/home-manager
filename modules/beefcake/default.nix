@@ -15,6 +15,9 @@
     stateVersion = "24.05";
 
     packages = with pkgs; [
+      rtk
+      kubelogin
+      azure-cli
       claude-code
       tex-fmt
       nil
