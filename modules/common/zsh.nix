@@ -13,6 +13,7 @@
         export SSH_AUTH_SOCK="$HOME/.1password/agent.sock"
         source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme
         source ${config.home.homeDirectory}/.p10k.zsh
+        source ${config.home.homeDirectory}/.config/op/plugins.sh
 
         bindkey "^[[1;5C" forward-word
         bindkey "^[[1;5D" backward-word

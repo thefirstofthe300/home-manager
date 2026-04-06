@@ -4,6 +4,11 @@
     lib.mkEnableOption "Software development tools";
 
   config = lib.mkIf config.myConfig.development.enable {
+    programs = {
+      claude-code = {
+        enable = true;
+      };
+    };
     home.packages = with pkgs; [
       go
       python3
@@ -15,6 +20,7 @@
       pre-commit
       commitizen
       circleci-cli
+      gh
     ];
   };
 }

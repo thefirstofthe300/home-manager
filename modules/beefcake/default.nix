@@ -1,8 +1,6 @@
 { pkgs, ... }: {
   imports = [ ../profiles/work.nix ];
 
-  myConfig.kubernetes.enable = true;
-
   nixpkgs.config = { 
     allowUnfree = true;
     allowUnfreePredicate = (pkg: true);
@@ -18,7 +16,6 @@
       rtk
       kubelogin
       azure-cli
-      claude-code
       tex-fmt
       nil
       nixfmt-classic
@@ -37,7 +34,14 @@
     };
   };
 
-  programs.home-manager.enable = true;
+  programs = {
+    home-manager = {
+      enable = true;
+    };
+    claude-code = {
+      enable = true;
+    };
+  };
 
   services = {
     flatpak = {
