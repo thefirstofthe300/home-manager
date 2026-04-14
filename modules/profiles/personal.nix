@@ -1,6 +1,9 @@
 { ... }: {
   programs.git = {
     enable = true;
+    signing = {
+      format = null;
+    };
     includes = [{
       contents = {
         user = {

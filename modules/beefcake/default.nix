@@ -5,6 +5,7 @@
     allowUnfree = true;
     allowUnfreePredicate = (pkg: true);
     nvidia.acceptLicense = true;
+    cudaSupport = true;
   };
 
   home = {
@@ -36,9 +37,6 @@
 
   programs = {
     home-manager = {
-      enable = true;
-    };
-    claude-code = {
       enable = true;
     };
   };

@@ -10,6 +10,9 @@
     jqp.enable = true;
     git = {
       enable = true;
+      signing = {
+        format = null;
+      };
       includes = [{
         contents = {
           user = {
