@@ -14,12 +14,8 @@
     stateVersion = "24.05";
 
     packages = with pkgs; [
-      rtk
-      kubelogin
-      azure-cli
-      tex-fmt
       nil
-      nixfmt-classic
+      nixfmt
       jetbrains.idea
     ];
   };
