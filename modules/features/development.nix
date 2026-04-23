@@ -60,6 +60,7 @@
         };
         settings = {
           permissions = {
+            defaultMode = "auto";
             allow = [
               "Read"
               "Glob"
@@ -127,6 +128,7 @@
       kubeconform
       kustomize
       nodejs
+      kyverno-chainsaw
     ];
   };
 }
