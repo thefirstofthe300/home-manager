@@ -3,13 +3,6 @@
     lib.mkEnableOption "Software development tools";
 
   config = lib.mkIf config.myConfig.development.enable {
-    services = {
-      ollama = {
-        enable = true;
-        acceleration = "cuda";
-        environmentVariables = { OLLAMA_CONTEXT_LENGTH = "64000"; };
-      };
-    };
     programs = {
       claude-code = {
         enable = true;
@@ -97,22 +90,10 @@
           };
         };
       };
-      opencode = {
-        enable = true;
-        settings = {
-          model = "ollama/gemma4:e2b";
-          provider = {
-            ollama = {
-              name = "Ollama";
-              options = { baseURL = "http://130.211.210.176:11434/v1"; };
-              models = { "gemma4:e2b" = { name = "gemma4:e2b"; }; };
-            };
-          };
-        };
-      };
     };
     home.packages = with pkgs; [
       go
+      golangci-lint
       python3
       cargo
       cargo-lambda
@@ -129,6 +110,7 @@
       kustomize
       nodejs
       kyverno-chainsaw
+      rabbitmqadmin-ng
     ];
   };
 }
