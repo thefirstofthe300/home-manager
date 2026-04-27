@@ -1,6 +1,8 @@
 { pkgs, ... }: {
   imports = [ ../profiles/work.nix ];
 
+  myConfig.localLlm.enable = true;
+
   nixpkgs.config = { 
     allowUnfree = true;
     allowUnfreePredicate = (pkg: true);

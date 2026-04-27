@@ -52,6 +52,7 @@
           };
         };
         settings = {
+          model = "claude-sonnet-4-6";
           permissions = {
             defaultMode = "auto";
             allow = [
@@ -87,6 +88,12 @@
                 "repo" = "fluxcd/agent-skills";
               };
             };
+            "gremlin-ai-skills-dev" = {
+              "source" = {
+                "source" = "directory";
+                "path" = "/home/dseymour/workspace/github.com/gremlin/gremlin-ai-skills";
+              };
+            };
           };
         };
       };
@@ -104,7 +111,6 @@
       commitizen
       circleci-cli
       gh
-      opencode
       yq
       kubeconform
       kustomize
