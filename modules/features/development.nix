@@ -42,12 +42,25 @@
           - Breaking changes: append `!` before the colon (`feat!:`) and/or add a `BREAKING CHANGE:` footer
           - Body and footers are separated from the preceding section by a blank line
         '';
+        skills = {
+          ai-writing = ./files/skills/ai-writing.md;
+        };
         mcpServers = {
           kubernetes-mcp-server = {
             command = "npx";
             args = [
               "-y"
               "kubernetes-mcp-server@latest"
+            ];
+          };
+          nextcloud = {
+            command = "npx";
+            args = [
+              "mcp-remote"
+              "https://cloud-mcp.seymour.family/mcp"
+              "3334"
+              "--static-oauth-client-info"
+              "@/home/dseymour/.config/mcp-remote/nextcloud-oauth.json"
             ];
           };
         };
@@ -101,6 +114,7 @@
     home.packages = with pkgs; [
       go
       golangci-lint
+      uv
       python3
       cargo
       cargo-lambda
@@ -117,6 +131,7 @@
       nodejs
       kyverno-chainsaw
       rabbitmqadmin-ng
+      rustc
     ];
   };
 }
