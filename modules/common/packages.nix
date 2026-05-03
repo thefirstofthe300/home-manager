@@ -7,6 +7,9 @@
       zsh-powerlevel10k
       zsh-you-should-use
       gnupg
+      direnv
+      nil
+      nixfmt
     ];
     enableNixpkgsReleaseCheck = false;
   };

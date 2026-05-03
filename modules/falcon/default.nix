@@ -2,6 +2,10 @@
   imports = [ ../profiles/personal.nix ];
 
   myConfig.kubernetes.enable = true;
+  myConfig.development.enable = true;
+  myConfig.cloud.enable = true;
+  myConfig.sbom.enable = true;
+
 
   nixpkgs.config.allowUnfreePredicate = (pkg: true);
 
@@ -10,6 +14,10 @@
     homeDirectory = "/home/dseymour";
     stateVersion = "24.05";
     sessionPath = [ "/home/dseymour/.krew/bin" ];
+
+    packages = with pkgs; [
+      cobra-cli
+    ];
   };
 
   fonts = {
@@ -26,6 +34,12 @@
 
   programs = {
     home-manager.enable = true;
+    direnv = {
+      enable = true;
+      nix-direnv = {
+        enable = true;
+      };
+    };
     git.extraConfig.gpg.ssh.program =
       "${pkgs._1password-gui}/share/1password/op-ssh-sign";
   };

@@ -2,6 +2,10 @@
   imports = [ ../profiles/work.nix ];
 
   myConfig.localLlm.enable = true;
+  myConfig.cloud.enable = true;
+  myConfig.development.enable = true;
+  myConfig.kubernetes.enable = true;
+  myConfig.sbom.enable = true;
 
   nixpkgs.config = { 
     allowUnfree = true;
