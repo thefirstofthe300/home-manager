@@ -1,17 +1,52 @@
 { pkgs, ... }: {
   imports = [ ../profiles/work.nix ];
 
-  myConfig.localLlm.enable = true;
   myConfig.cloud.enable = true;
   myConfig.development.enable = true;
   myConfig.kubernetes.enable = true;
   myConfig.sbom.enable = true;
 
-  nixpkgs.config = { 
+  myConfig.vllm = {
+    enable = true;
+    model = "Qwen/Qwen2.5-7B-Instruct";
+  };
+
+  nixpkgs.config = {
     allowUnfree = true;
     allowUnfreePredicate = (pkg: true);
     nvidia.acceptLicense = true;
     cudaSupport = true;
+  };
+
+  # Workaround for home-manager PR #9240: targets.genericLinux.gpu calls
+  # .override { kernel = null; } but nixpkgs removed that parameter.
+  # Strip it before forwarding to the real override.
+  nixpkgs.overlays = [
+    (final: prev: {
+      linuxPackages = prev.linuxPackages // {
+        nvidiaPackages = prev.linuxPackages.nvidiaPackages // {
+          mkDriver = driverArgs:
+            let
+              drv = prev.linuxPackages.nvidiaPackages.mkDriver driverArgs;
+            in
+              drv // {
+                override = overrideArgs:
+                  drv.override (builtins.removeAttrs overrideArgs [ "kernel" ]);
+              };
+        };
+      };
+    })
+  ];
+
+  targets.genericLinux = {
+    gpu = {
+      enable = true;
+      nvidia = {
+        enable = true;
+        version = "595.71.05";
+        sha256 = "sha256-NiA7iWC35JyKQva6H1hjzeNKBek9KyS3mK8G3YRva4I=";
+      };
+    };
   };
 
   home = {
@@ -24,17 +59,6 @@
       nixfmt
       jetbrains.idea
     ];
-  };
-
-  targets.genericLinux = {
-    gpu ={
-      enable = true;
-      nvidia = {
-        enable = true;
-        version = "595.58.03";
-        sha256 = "sha256-jA1Plnt5MsSrVxQnKu6BAzkrCnAskq+lVRdtNiBYKfk=";
-      };
-    };
   };
 
   programs = {

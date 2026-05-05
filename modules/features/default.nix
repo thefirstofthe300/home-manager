@@ -5,5 +5,6 @@
     ./development.nix
     ./sbom.nix
     ./local-llm.nix
+    ./vllm.nix
   ];
 }
