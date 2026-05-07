@@ -8,7 +8,7 @@
         enable = true;
         context = ./files/claude-context/CLAUDE.md;
         rulesDir = ./files/claude-rules;
-        skillsDir = ./files/claude-skills;
+        skills = ./files/claude-skills;
         mcpServers = {
           kubernetes-mcp-server = {
             command = "npx";
