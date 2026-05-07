@@ -17,8 +17,7 @@ changes) unless the user asks.
 
 ## Workstream
 
-Before writing the note, identify the workstream. Ask the user if it is not clear
-from context. Examples:
+The workstream is a controlled vocabulary. Allowed values:
 
 - Platform Engineering
 - Developer Experience
@@ -26,6 +25,16 @@ from context. Examples:
 - Data & Analytics
 - Reliability & On-Call
 - Product Features
+
+**Matching rules:**
+1. Infer the workstream from context (the project, codebase, PR, etc.).
+2. Pick the closest match from the list above. Fuzzy matching is fine —
+   "infra work" → Platform Engineering, "on-call" → Reliability & On-Call.
+3. If nothing fits well, ask: "Which workstream should I file this under?
+   Current options: [list]. Or tell me a new one to add."
+4. If the user specifies a new workstream, add it to the allowed values list
+   in this rule file (`claude-rules/work-project-notes.md`) before creating
+   the note, so future projects can match against it.
 
 Use the workstream as the folder name in Nextcloud Notes. The path for the note
 should be: `<Workstream>/<YYYY-MM-DD> <project title>.md`
