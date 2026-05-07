@@ -31,21 +31,23 @@ noise on the ticket, skip it.
 
 ## Posting the update
 
-Use the Atlassian MCP server to add a comment to the ticket. The comment should be
-a concise status update suitable for stakeholders:
+Use `acli` via Bash to add a comment. The comment should be a concise status
+update suitable for stakeholders (under 100 words, plain text):
 
 ```
-*Status update — <YYYY-MM-DD>*
+Status update — <YYYY-MM-DD>
 
-*What happened:* <1–2 sentences: the concrete thing that was done or decided>
+What happened: <1–2 sentences: the concrete thing that was done or decided>
 
-*Next:* <what comes next, or "complete" if done>
+Next: <what comes next, or "complete" if done>
 
-*Blockers:* <any blockers, or omit if none>
+Blockers: <any blockers, or omit if none>
 ```
 
-Keep it under 100 words. No implementation details unless directly relevant to
-stakeholders. Use Jira's wiki markup (not Markdown) if the MCP server requires it.
+Command:
+```bash
+acli jira workitem comment create --key "<TICKET-ID>" --body "<comment>"
+```
 
 ## Creating a ticket
 
@@ -53,5 +55,13 @@ If the user wants a new ticket created, ask for:
 - Project key (e.g. ENG, PLAT, SEC) if not obvious from context
 - Brief title for the issue
 
-Then create it as a Story or Task (whichever fits) with a short description
-summarizing what was built or decided. Report the new ticket ID to the user.
+Then create it as a Story or Task (whichever fits):
+```bash
+acli jira workitem create \
+  --project "<PROJECT-KEY>" \
+  --type "Story" \
+  --summary "<title>" \
+  --description "<short description of what was built or decided>"
+```
+
+Report the new ticket ID to the user.
