@@ -3,31 +3,17 @@
     lib.mkEnableOption "Software development tools";
 
   config = lib.mkIf config.myConfig.development.enable {
+    sops.secrets.jira-api-token = {
+      sopsFile = ../../secrets/common.yaml;
+    };
+
     programs = {
       claude-code = {
         enable = true;
+        enableMcpIntegration = true;
         context = ./files/claude-context/CLAUDE.md;
         rulesDir = ./files/claude-rules;
         skills = ./files/claude-skills;
-        mcpServers = {
-          kubernetes-mcp-server = {
-            command = "npx";
-            args = [
-              "-y"
-              "kubernetes-mcp-server@latest"
-            ];
-          };
-          nextcloud = {
-            command = "npx";
-            args = [
-              "mcp-remote"
-              "https://cloud-mcp.seymour.family/mcp"
-              "3334"
-              "--static-oauth-client-info"
-              "@/home/dseymour/.config/mcp-remote/nextcloud-oauth.json"
-            ];
-          };
-        };
         settings = {
           model = "claude-sonnet-4-6";
           permissions = {
@@ -44,6 +30,7 @@
             ];
           };
           enabledPlugins = {
+            "claude-mem@thedotmack" = true;
             "claude-code-setup@claude-plugins-official" = true;
             "slack@claude-plugins-official" = true;
             "code-review@claude-plugins-official" = true;
@@ -71,11 +58,56 @@
                 "path" = "/home/dseymour/workspace/github.com/gremlin/gremlin-ai-skills";
               };
             };
+            "thedotmack" = {
+              "source" = {
+                "source" = "github";
+                "repo" = "thedotmack/claude-mem";
+              };
+            };
           };
         };
       };
     };
+    programs.mcp = {
+      enable = true;
+      servers = {
+        jira-mcp = {
+          command = lib.getExe (pkgs.writeShellApplication {
+            name = "jira-mcp-server";
+            runtimeInputs = [ pkgs.nodejs ];
+            text = ''
+              JIRA_API_TOKEN=$(cat ${lib.escapeShellArg config.sops.secrets.jira-api-token.path})
+              export JIRA_API_TOKEN
+              exec node /home/dseymour/workspace/github.com/gremlin/gremlin-ai-skills/ENG/jira-mcp-bridge/dist/server.js "$@"
+            '';
+          });
+          env = {
+            JIRA_BASE_URL = "https://gremlininc.atlassian.net";
+            JIRA_EMAIL = "danny.seymour@gremlin.com";
+          };
+        };
+        kubernetes-mcp-server = {
+          command = "npx";
+          args = [
+            "-y"
+            "kubernetes-mcp-server@latest"
+          ];
+        };
+        nextcloud = {
+          command = "npx";
+          args = [
+            "mcp-remote"
+            "https://cloud-mcp.seymour.family/mcp"
+            "3334"
+            "--static-oauth-client-info"
+            "@/home/dseymour/.config/mcp-remote/nextcloud-oauth.json"
+          ];
+        };
+      };
+    };
+
     home.packages = with pkgs; [
+      bun
       go
       golangci-lint
       uv
