@@ -1,4 +1,57 @@
-{ pkgs, ... }: {
+{ pkgs, lib, config, ... }:
+let
+  devfilerBase = pkgs.rustPlatform.buildRustPackage {
+    pname = "devfiler";
+    version = "0.15.0";
+
+    src = pkgs.fetchgit {
+      url = "https://github.com/elastic/devfiler";
+      rev = "81aa1af2ba176ec590f24310e333888abb479894";
+      fetchSubmodules = true;
+      hash = "sha256-ReMn5fe4x80DEM4fOfDMdDQoFWyQEypKzkivCVaRNjs=";
+    };
+
+    cargoHash = "sha256-41Ay9nNALfTQEe8R2enaVlMD00PI3hRwEGIb5X7KzGM=";
+
+    buildNoDefaultFeatures = true;
+    buildFeatures = [ "render-opengl" "automagic-symbols" "allow-dev-mode" ];
+
+    nativeBuildInputs = with pkgs; [ pkg-config cmake clang protobuf makeWrapper ];
+
+    buildInputs = with pkgs; [
+      llvmPackages.libclang.lib
+      openssl
+      libGL
+      wayland
+      libxkbcommon
+      libx11
+      libxcursor
+      libxi
+      libxrandr
+    ];
+
+    env = {
+      LIBCLANG_PATH = "${pkgs.llvmPackages.libclang.lib}/lib";
+      # RocksDB headers omit <cstdint> includes, which GCC 15 requires explicitly
+      CXXFLAGS = "-include cstdint";
+    };
+
+    postInstall = ''
+      wrapProgram $out/bin/devfiler \
+        --prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath (with pkgs; [
+          libxkbcommon wayland libx11 libxcursor libxi libxrandr
+        ])}
+    '';
+  };
+
+  # Mirror what nixGLNvidia does, using the libs targets.genericLinux.gpu.nvidia
+  # already places in /run/opengl-driver.
+  devfiler = pkgs.writeShellScriptBin "devfiler" ''
+    export __EGL_VENDOR_LIBRARY_FILENAMES=/run/opengl-driver/share/glvnd/egl_vendor.d/10_nvidia.json:/run/opengl-driver/share/glvnd/egl_vendor.d/50_mesa.json''${__EGL_VENDOR_LIBRARY_FILENAMES:+:$__EGL_VENDOR_LIBRARY_FILENAMES}
+    export LD_LIBRARY_PATH=${pkgs.libglvnd}/lib:/run/opengl-driver/lib''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
+    exec ${devfilerBase}/bin/devfiler "$@"
+  '';
+in {
   imports = [ ../profiles/work.nix ];
 
   myConfig.cloud.enable = true;
@@ -6,9 +59,16 @@
   myConfig.kubernetes.enable = true;
   myConfig.sbom.enable = true;
 
+  sops.secrets.hf-token = {
+    sopsFile = ../../secrets/common.yaml;
+  };
+
   myConfig.vllm = {
     enable = true;
-    model = "Qwen/Qwen2.5-7B-Instruct";
+    model = "google/gemma-4-E2B";
+    toolCallParser = "pythonic";
+    hfTokenFile = config.sops.secrets.hf-token.path;
+    opencode.enable = true;
   };
 
   nixpkgs.config = {
@@ -58,7 +118,15 @@
       nil
       nixfmt
       jetbrains.idea
+      cmake
+      clang
+      llvmPackages.libclang.lib
+      devfiler
     ];
+
+    sessionVariables = {
+      LIBCLANG_PATH = "${pkgs.llvmPackages.libclang.lib}/lib";
+    };
   };
 
   programs = {
