@@ -1,0 +1,8 @@
+keys:
+  - &beefcake age1pj2jjxkflq5463kshykxpqdh6hah45saq5yqdrtch5lu3x2kudqqtpxu8s
+
+creation_rules:
+  - path_regex: secrets/.*\.yaml$
+    key_groups:
+      - age:
+          - *beefcake
