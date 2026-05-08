@@ -1,6 +1,8 @@
 { pkgs, config, ... }: {
   home = {
     packages = with pkgs; [
+      age
+      sops
       nerd-fonts.fira-code
       meslo-lgs-nf
       noto-fonts

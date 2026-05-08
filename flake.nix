@@ -22,9 +22,13 @@
     nix-flatpak = {
       url = "github:gmodena/nix-flatpak";
     };
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { nixpkgs, home-manager, nixgl, nix-flatpak, ... }:
+  outputs = { nixpkgs, home-manager, nixgl, nix-flatpak, sops-nix, ... }:
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
@@ -33,36 +37,39 @@
         "dseymour@falcon" = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
 
-          extraSpecialArgs = { inherit nixgl; };
+          extraSpecialArgs = { inherit nixgl sops-nix; };
 
           modules = [
             ./modules/falcon
             ./modules/common
             nix-flatpak.homeManagerModules.nix-flatpak
+            sops-nix.homeManagerModules.sops
           ];
         };
 
         "dseymour@beefcake" = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
 
-          extraSpecialArgs = { inherit nixgl; };
+          extraSpecialArgs = { inherit nixgl sops-nix; };
 
           modules = [
             ./modules/beefcake
             ./modules/common
             nix-flatpak.homeManagerModules.nix-flatpak
+            sops-nix.homeManagerModules.sops
           ];
         };
 
         "dseymour@iron-man" = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
 
-          extraSpecialArgs = { inherit nixgl; };
+          extraSpecialArgs = { inherit nixgl sops-nix; };
 
           modules = [
             ./modules/iron-man
             ./modules/common
             nix-flatpak.homeManagerModules.nix-flatpak
+            sops-nix.homeManagerModules.sops
           ];
         };
       };
