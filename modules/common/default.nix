@@ -1,1 +1,14 @@
-{ ... }: { imports = [ ./ssh.nix ./packages.nix ./terminal.nix ./zsh.nix ./files.nix ./vim.nix ./direnv.nix ./secrets.nix ../features ]; }
+{ ... }:
+{
+  imports = [
+    ./ssh.nix
+    ./packages.nix
+    ./terminal.nix
+    ./zsh.nix
+    ./files.nix
+    ./vim.nix
+    ./direnv.nix
+    ./secrets.nix
+    ../features
+  ];
+}

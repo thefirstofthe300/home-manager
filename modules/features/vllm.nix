@@ -1,9 +1,17 @@
-{ lib, pkgs, config, ... }:
+{
+  lib,
+  pkgs,
+  config,
+  ...
+}:
 let
   cfg = config.myConfig.vllm;
-  extraArgsStr = lib.optionalString (cfg.extraArgs != [ ]) " ${lib.concatStringsSep " " cfg.extraArgs}";
+  extraArgsStr = lib.optionalString (
+    cfg.extraArgs != [ ]
+  ) " ${lib.concatStringsSep " " cfg.extraArgs}";
   baseURL = "http://${cfg.host}:${toString cfg.port}/v1";
-in {
+in
+{
   options.myConfig.vllm = {
     enable = lib.mkEnableOption "vLLM OpenAI-compatible inference server";
 
@@ -72,13 +80,14 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    assertions = [{
-      assertion = cfg.model != "";
-      message = "myConfig.vllm.model must be set to a HuggingFace model ID when vLLM is enabled";
-    }];
+    assertions = [
+      {
+        assertion = cfg.model != "";
+        message = "myConfig.vllm.model must be set to a HuggingFace model ID when vLLM is enabled";
+      }
+    ];
 
-    home.packages = [ pkgs.vllm ]
-      ++ lib.optionals cfg.opencode.enable [ pkgs.opencode ];
+    home.packages = [ pkgs.vllm ] ++ lib.optionals cfg.opencode.enable [ pkgs.opencode ];
 
     systemd.user.services.vllm = {
       Unit = {

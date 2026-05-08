@@ -1,7 +1,13 @@
-{ lib, pkgs, config, ... }:
+{
+  lib,
+  pkgs,
+  config,
+  ...
+}:
 let
   cfg = config.myConfig.localLlm;
-in {
+in
+{
   options.myConfig.localLlm = {
     enable = lib.mkEnableOption "Local LLM stack (Ollama)";
     models = lib.mkOption {

@@ -1,4 +1,5 @@
-{ ... }: {
+{ ... }:
+{
   home.file = {
     p10k = {
       target = ".p10k.zsh";

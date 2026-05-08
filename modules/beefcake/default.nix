@@ -1,4 +1,9 @@
-{ pkgs, lib, config, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 let
   devfilerBase = pkgs.rustPlatform.buildRustPackage {
     pname = "devfiler";
@@ -14,9 +19,19 @@ let
     cargoHash = "sha256-41Ay9nNALfTQEe8R2enaVlMD00PI3hRwEGIb5X7KzGM=";
 
     buildNoDefaultFeatures = true;
-    buildFeatures = [ "render-opengl" "automagic-symbols" "allow-dev-mode" ];
+    buildFeatures = [
+      "render-opengl"
+      "automagic-symbols"
+      "allow-dev-mode"
+    ];
 
-    nativeBuildInputs = with pkgs; [ pkg-config cmake clang protobuf makeWrapper ];
+    nativeBuildInputs = with pkgs; [
+      pkg-config
+      cmake
+      clang
+      protobuf
+      makeWrapper
+    ];
 
     buildInputs = with pkgs; [
       llvmPackages.libclang.lib
@@ -38,9 +53,19 @@ let
 
     postInstall = ''
       wrapProgram $out/bin/devfiler \
-        --prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath (with pkgs; [
-          libxkbcommon wayland libx11 libxcursor libxi libxrandr
-        ])}
+        --prefix LD_LIBRARY_PATH : ${
+          lib.makeLibraryPath (
+            with pkgs;
+            [
+              libxkbcommon
+              wayland
+              libx11
+              libxcursor
+              libxi
+              libxrandr
+            ]
+          )
+        }
     '';
   };
 
@@ -51,7 +76,8 @@ let
     export LD_LIBRARY_PATH=${pkgs.libglvnd}/lib:/run/opengl-driver/lib''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
     exec ${devfilerBase}/bin/devfiler "$@"
   '';
-in {
+in
+{
   imports = [ ../profiles/work.nix ];
 
   myConfig.cloud.enable = true;
@@ -85,14 +111,15 @@ in {
     (final: prev: {
       linuxPackages = prev.linuxPackages // {
         nvidiaPackages = prev.linuxPackages.nvidiaPackages // {
-          mkDriver = driverArgs:
+          mkDriver =
+            driverArgs:
             let
               drv = prev.linuxPackages.nvidiaPackages.mkDriver driverArgs;
             in
-              drv // {
-                override = overrideArgs:
-                  drv.override (builtins.removeAttrs overrideArgs [ "kernel" ]);
-              };
+            drv
+            // {
+              override = overrideArgs: drv.override (builtins.removeAttrs overrideArgs [ "kernel" ]);
+            };
         };
       };
     })

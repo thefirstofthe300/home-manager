@@ -1,4 +1,10 @@
-{ config, pkgs, nixgl, ... }: {
+{
+  config,
+  pkgs,
+  nixgl,
+  ...
+}:
+{
   programs = {
     ghostty = {
       enable = true;

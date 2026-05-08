@@ -1,11 +1,11 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   imports = [ ../profiles/personal.nix ];
 
   myConfig.kubernetes.enable = true;
   myConfig.development.enable = true;
   myConfig.cloud.enable = true;
   myConfig.sbom.enable = true;
-
 
   nixpkgs.config.allowUnfreePredicate = (pkg: true);
 
@@ -40,8 +40,7 @@
         enable = true;
       };
     };
-    git.extraConfig.gpg.ssh.program =
-      "${pkgs._1password-gui}/share/1password/op-ssh-sign";
+    git.extraConfig.gpg.ssh.program = "${pkgs._1password-gui}/share/1password/op-ssh-sign";
   };
 
   services = {

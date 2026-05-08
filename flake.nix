@@ -28,11 +28,20 @@
     };
   };
 
-  outputs = { nixpkgs, home-manager, nixgl, nix-flatpak, sops-nix, ... }:
+  outputs =
+    {
+      nixpkgs,
+      home-manager,
+      nixgl,
+      nix-flatpak,
+      sops-nix,
+      ...
+    }:
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
-    in {
+    in
+    {
       homeConfigurations = {
         "dseymour@falcon" = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;

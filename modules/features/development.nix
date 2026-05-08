@@ -84,7 +84,7 @@
               text = ''
                 JIRA_API_TOKEN=$(cat ${lib.escapeShellArg config.sops.secrets.jira-api-token.path})
                 export JIRA_API_TOKEN
-                exec node /home/dseymour/workspace/github.com/gremlin/gremlin-ai-skills/ENG/jira-mcp/dist/server.js "$@"
+                exec npx /home/dseymour/workspace/github.com/gremlin/gremlin-ai-skills/ENG/jira-mcp/dist/server.js "$@"
               '';
             }
           );
