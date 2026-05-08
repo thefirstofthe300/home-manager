@@ -1,6 +1,11 @@
-{ lib, pkgs, config, ... }: {
-  options.myConfig.development.enable =
-    lib.mkEnableOption "Software development tools";
+{
+  lib,
+  pkgs,
+  config,
+  ...
+}:
+{
+  options.myConfig.development.enable = lib.mkEnableOption "Software development tools";
 
   config = lib.mkIf config.myConfig.development.enable {
     sops.secrets.jira-api-token = {
@@ -72,15 +77,17 @@
       enable = true;
       servers = {
         jira-mcp = {
-          command = lib.getExe (pkgs.writeShellApplication {
-            name = "jira-mcp-server";
-            runtimeInputs = [ pkgs.nodejs ];
-            text = ''
-              JIRA_API_TOKEN=$(cat ${lib.escapeShellArg config.sops.secrets.jira-api-token.path})
-              export JIRA_API_TOKEN
-              exec node /home/dseymour/workspace/github.com/gremlin/gremlin-ai-skills/ENG/jira-mcp/dist/server.js "$@"
-            '';
-          });
+          command = lib.getExe (
+            pkgs.writeShellApplication {
+              name = "jira-mcp";
+              runtimeInputs = [ pkgs.nodejs ];
+              text = ''
+                JIRA_API_TOKEN=$(cat ${lib.escapeShellArg config.sops.secrets.jira-api-token.path})
+                export JIRA_API_TOKEN
+                exec node /home/dseymour/workspace/github.com/gremlin/gremlin-ai-skills/ENG/jira-mcp/dist/server.js "$@"
+              '';
+            }
+          );
           env = {
             JIRA_BASE_URL = "https://gremlininc.atlassian.net";
             JIRA_EMAIL = "danny.seymour@gremlin.com";
