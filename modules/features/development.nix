@@ -4,6 +4,20 @@
   config,
   ...
 }:
+let
+  # uvx wrapper that injects libstdc++ and zlib only when spawning chroma-mcp,
+  # so the Nix python3.13 linker can find them without polluting the global env.
+  uvxChromaWrapper = pkgs.writeShellScriptBin "uvx" ''
+    if [[ "$*" == *chroma-mcp* ]]; then
+      export LD_LIBRARY_PATH="${pkgs.stdenv.cc.cc.lib}/lib:${pkgs.zlib}/lib''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+    fi
+    exec ${pkgs.uv}/bin/uvx "$@"
+  '';
+  uvWithChromaFix = pkgs.symlinkJoin {
+    name = "uv-with-chroma-uvx-fix";
+    paths = [ uvxChromaWrapper pkgs.uv ];
+  };
+in
 {
   options.myConfig.development.enable = lib.mkEnableOption "Software development tools";
 
@@ -116,16 +130,14 @@
             "-y"
             "claude-mem@latest"
           ];
-          env = {
-            LD_LIBRARY_PATH = "${pkgs.stdenv.cc.cc.lib}/lib:${pkgs.zlib}/lib";
-          };
+          env = { };
         };
       };
     };
 
     home.packages = with pkgs; [
       bun
-      uv
+      uvWithChromaFix
       go
       golangci-lint
       python3
