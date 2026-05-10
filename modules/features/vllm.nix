@@ -5,14 +5,14 @@
   ...
 }:
 let
-  cfg = config.myConfig.vllm;
+  cfg = config.features.vllm;
   extraArgsStr = lib.optionalString (
     cfg.extraArgs != [ ]
   ) " ${lib.concatStringsSep " " cfg.extraArgs}";
   baseURL = "http://${cfg.host}:${toString cfg.port}/v1";
 in
 {
-  options.myConfig.vllm = {
+  options.features.vllm = {
     enable = lib.mkEnableOption "vLLM OpenAI-compatible inference server";
 
     model = lib.mkOption {
@@ -83,7 +83,7 @@ in
     assertions = [
       {
         assertion = cfg.model != "";
-        message = "myConfig.vllm.model must be set to a HuggingFace model ID when vLLM is enabled";
+        message = "features.vllm.model must be set to a HuggingFace model ID when vLLM is enabled";
       }
     ];
 

@@ -5,9 +5,9 @@
   ...
 }:
 {
-  options.myConfig.cloud.enable = lib.mkEnableOption "Cloud provider and infrastructure tools";
+  options.features.cloud.enable = lib.mkEnableOption "Cloud provider and infrastructure tools";
 
-  config = lib.mkIf config.myConfig.cloud.enable {
+  config = lib.mkIf config.features.cloud.enable {
     home.packages = with pkgs; [
       awscli2
       aws-iam-authenticator

@@ -5,9 +5,9 @@
   ...
 }:
 {
-  options.myConfig.sbom.enable = lib.mkEnableOption "Software supply chain and SBOM tools";
+  options.features.sbom.enable = lib.mkEnableOption "Software supply chain and SBOM tools";
 
-  config = lib.mkIf config.myConfig.sbom.enable {
+  config = lib.mkIf config.features.sbom.enable {
     home.packages = with pkgs; [
       syft
       diffoci

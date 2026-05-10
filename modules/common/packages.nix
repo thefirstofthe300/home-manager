@@ -1,4 +1,4 @@
-{ pkgs, config, ... }:
+{ pkgs, ... }:
 {
   home = {
     packages = with pkgs; [
@@ -16,14 +16,7 @@
     ];
     enableNixpkgsReleaseCheck = false;
   };
-  xdg = {
-    autostart = {
-      enable = true;
-      entries = [
-        "${config.home.homeDirectory}/.local/share/flatpak/exports/share/applications/im.riot.Riot.desktop"
-      ];
-    };
-  };
+  xdg.autostart.enable = true;
   services = {
     home-manager = {
       autoExpire = {

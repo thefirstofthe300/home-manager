@@ -42,22 +42,22 @@ Every feature module under `modules/features/` follows this pattern:
 ```nix
 { lib, pkgs, config, ... }:
 {
-  options.myConfig.<feature>.enable = lib.mkEnableOption "<description>";
-  config = lib.mkIf config.myConfig.<feature>.enable {
+  options.features.<feature>.enable = lib.mkEnableOption "<description>";
+  config = lib.mkIf config.features.<feature>.enable {
     home.packages = with pkgs; [ ... ];
   };
 }
 ```
 
-Features are toggled on by profiles (`modules/profiles/work.nix` enables all four; `personal.nix` enables none) or by individual hosts (`falcon` enables kubernetes on top of personal profile).
+Features are toggled on by profiles (`modules/profiles/work.nix` enables all four; `personal.nix` enables none) or by individual hosts (`falcon` enables all four on top of personal profile; `iron-man` enables `development` only).
 
-Current features: `kubernetes`, `cloud`, `development`, `sbom`.
+Current features: `kubernetes`, `cloud`, `development`, `sbom`, `local-llm`, `vllm`.
 
 ### Host Differences
 
-- **beefcake** (work): All features enabled, NVIDIA GPU with CUDA, `targets.genericLinux.gpu`, nix GC, Slack/Fastmail flatpaks
-- **falcon** (personal): Kubernetes only, custom fonts, 1Password SSH signing via `op-ssh-sign`
-- **iron-man** (personal): Minimal personal setup
+- **beefcake** (work): All features enabled, NVIDIA GPU with CUDA, `targets.genericLinux.gpu`, nix GC, Slack/Fastmail flatpaks, vllm
+- **falcon** (personal): All four features enabled, krew for kubectl plugins, Riot flatpak
+- **iron-man** (personal): `development` feature only, GNOME dconf theme settings
 
 ### Flake Inputs
 
