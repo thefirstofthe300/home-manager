@@ -132,6 +132,9 @@ in
           ];
           env = { };
         };
+        todoist = {
+          "url" = "https://ai.todoist.net/mcp";
+        };
       };
     };
 
