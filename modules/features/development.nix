@@ -138,6 +138,9 @@ in
           ];
           env = { };
         };
+        todoist = {
+          "url" = "https://ai.todoist.net/mcp";
+        };
       }
       // lib.optionalAttrs (cfg.gremlinSkillsPath != "") {
         jira-mcp = {
