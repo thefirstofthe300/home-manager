@@ -9,6 +9,7 @@
     ./vim.nix
     ./direnv.nix
     ./secrets.nix
+    ./user.nix
     ../features
   ];
 }

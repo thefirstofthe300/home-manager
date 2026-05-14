@@ -1,9 +1,9 @@
 { ... }:
 {
-  myConfig.cloud.enable = true;
-  myConfig.development.enable = true;
-  myConfig.sbom.enable = true;
-  myConfig.kubernetes.enable = true;
+  features.cloud.enable = true;
+  features.development.enable = true;
+  features.sbom.enable = true;
+  features.kubernetes.enable = true;
 
   nix.gc.automatic = true;
 

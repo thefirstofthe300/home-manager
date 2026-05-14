@@ -5,6 +5,7 @@
   ...
 }:
 let
+  cfg = config.features.development;
   # uvx wrapper that injects libstdc++ and zlib only when spawning chroma-mcp,
   # so the Nix python3.13 linker can find them without polluting the global env.
   uvxChromaWrapper = pkgs.writeShellScriptBin "uvx" ''
@@ -15,15 +16,34 @@ let
   '';
   uvWithChromaFix = pkgs.symlinkJoin {
     name = "uv-with-chroma-uvx-fix";
-    paths = [ uvxChromaWrapper pkgs.uv ];
+    paths = [
+      uvxChromaWrapper
+      pkgs.uv
+    ];
   };
 in
 {
-  options.myConfig.development.enable = lib.mkEnableOption "Software development tools";
+  options.features.development = {
+    enable = lib.mkEnableOption "Software development tools";
 
-  config = lib.mkIf config.myConfig.development.enable {
-    sops.secrets.jira-api-token = {
-      sopsFile = ../../secrets/common.yaml;
+    gremlinSkillsPath = lib.mkOption {
+      type = lib.types.str;
+      default = "";
+      description = "Absolute path to a local gremlin-ai-skills checkout. Enables the gremlin-ai-skills-dev marketplace and jira-mcp server when non-empty.";
+    };
+
+    jiraEmail = lib.mkOption {
+      type = lib.types.str;
+      default = "";
+      description = "Email address used for JIRA MCP integration.";
+    };
+  };
+
+  config = lib.mkIf cfg.enable {
+    sops.secrets = lib.mkIf (cfg.gremlinSkillsPath != "") {
+      jira-api-token = {
+        sopsFile = ../../secrets/common.yaml;
+      };
     };
 
     programs = {
@@ -71,42 +91,28 @@ in
                 "repo" = "fluxcd/agent-skills";
               };
             };
-            "gremlin-ai-skills-dev" = {
-              "source" = {
-                "source" = "directory";
-                "path" = "/home/dseymour/workspace/github.com/gremlin/gremlin-ai-skills";
-              };
-            };
             "thedotmack" = {
               "source" = {
                 "source" = "github";
                 "repo" = "thedotmack/claude-mem";
               };
             };
+          }
+          // lib.optionalAttrs (cfg.gremlinSkillsPath != "") {
+            "gremlin-ai-skills-dev" = {
+              "source" = {
+                "source" = "directory";
+                "path" = cfg.gremlinSkillsPath;
+              };
+            };
           };
         };
       };
     };
+
     programs.mcp = {
       enable = true;
       servers = {
-        jira-mcp = {
-          command = lib.getExe (
-            pkgs.writeShellApplication {
-              name = "jira-mcp";
-              runtimeInputs = [ pkgs.nodejs ];
-              text = ''
-                JIRA_API_TOKEN=$(cat ${lib.escapeShellArg config.sops.secrets.jira-api-token.path})
-                export JIRA_API_TOKEN
-                exec npx /home/dseymour/workspace/github.com/gremlin/gremlin-ai-skills/ENG/jira-mcp/dist/server.js "$@"
-              '';
-            }
-          );
-          env = {
-            JIRA_BASE_URL = "https://gremlininc.atlassian.net";
-            JIRA_EMAIL = "danny.seymour@gremlin.com";
-          };
-        };
         kubernetes-mcp-server = {
           command = "npx";
           args = [
@@ -121,7 +127,7 @@ in
             "https://cloud-mcp.seymour.family/mcp"
             "3334"
             "--static-oauth-client-info"
-            "@/home/dseymour/.config/mcp-remote/nextcloud-oauth.json"
+            "@${config.xdg.configHome}/mcp-remote/nextcloud-oauth.json"
           ];
         };
         mcp-search = {
@@ -135,10 +141,30 @@ in
         todoist = {
           "url" = "https://ai.todoist.net/mcp";
         };
+      }
+      // lib.optionalAttrs (cfg.gremlinSkillsPath != "") {
+        jira-mcp = {
+          command = lib.getExe (
+            pkgs.writeShellApplication {
+              name = "jira-mcp";
+              runtimeInputs = [ pkgs.nodejs ];
+              text = ''
+                JIRA_API_TOKEN=$(cat ${lib.escapeShellArg config.sops.secrets.jira-api-token.path})
+                export JIRA_API_TOKEN
+                exec npx ${cfg.gremlinSkillsPath}/ENG/jira-mcp/dist/server.js "$@"
+              '';
+            }
+          );
+          env = {
+            JIRA_BASE_URL = "https://gremlininc.atlassian.net";
+            JIRA_EMAIL = cfg.jiraEmail;
+          };
+        };
       };
     };
 
     home.packages = with pkgs; [
+      cobra-cli
       bun
       uvWithChromaFix
       go

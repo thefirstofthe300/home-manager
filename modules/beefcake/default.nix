@@ -80,16 +80,16 @@ in
 {
   imports = [ ../profiles/work.nix ];
 
-  myConfig.cloud.enable = true;
-  myConfig.development.enable = true;
-  myConfig.kubernetes.enable = true;
-  myConfig.sbom.enable = true;
+  features.cloud.enable = true;
+  features.development.enable = true;
+  features.kubernetes.enable = true;
+  features.sbom.enable = true;
 
   sops.secrets.hf-token = {
     sopsFile = ../../secrets/common.yaml;
   };
 
-  myConfig.vllm = {
+  features.vllm = {
     enable = true;
     model = "google/gemma-4-E2B";
     toolCallParser = "pythonic";
@@ -99,7 +99,6 @@ in
 
   nixpkgs.config = {
     allowUnfree = true;
-    allowUnfreePredicate = (pkg: true);
     nvidia.acceptLicense = true;
     cudaSupport = true;
   };
@@ -136,14 +135,11 @@ in
     };
   };
 
-  home = {
-    username = "dseymour";
-    homeDirectory = "/home/dseymour";
-    stateVersion = "24.05";
+  features.development.gremlinSkillsPath = "/home/dseymour/workspace/github.com/gremlin/gremlin-ai-skills";
+  features.development.jiraEmail = "danny.seymour@gremlin.com";
 
+  home = {
     packages = with pkgs; [
-      nil
-      nixfmt
       jetbrains.idea
       cmake
       clang
@@ -156,11 +152,9 @@ in
     };
   };
 
-  programs = {
-    home-manager = {
-      enable = true;
-    };
-  };
+  xdg.autostart.entries = [
+    "/home/dseymour/.local/share/flatpak/exports/share/applications/im.riot.Riot.desktop"
+  ];
 
   services = {
     flatpak = {

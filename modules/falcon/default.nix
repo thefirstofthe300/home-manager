@@ -1,57 +1,27 @@
-{ pkgs, ... }:
+{ config, ... }:
 {
   imports = [ ../profiles/personal.nix ];
 
-  myConfig.kubernetes.enable = true;
-  myConfig.development.enable = true;
-  myConfig.cloud.enable = true;
-  myConfig.sbom.enable = true;
+  features.kubernetes.enable = true;
+  features.development.enable = true;
+  features.cloud.enable = true;
+  features.sbom.enable = true;
 
-  nixpkgs.config.allowUnfreePredicate = (pkg: true);
+  home.sessionPath = [ "/home/dseymour/.krew/bin" ];
 
-  home = {
-    username = "dseymour";
-    homeDirectory = "/home/dseymour";
-    stateVersion = "24.05";
-    sessionPath = [ "/home/dseymour/.krew/bin" ];
+  programs.direnv.nix-direnv.enable = true;
 
-    packages = with pkgs; [
-      cobra-cli
+  xdg.autostart.entries = [
+    "${config.home.homeDirectory}/.local/share/flatpak/exports/share/applications/im.riot.Riot.desktop"
+  ];
+
+  services.flatpak = {
+    enable = true;
+    packages = [
+      "com.spotify.Client"
+      "com.github.tchx84.Flatseal"
+      "net.nokyan.Resources"
+      "im.riot.Riot"
     ];
-  };
-
-  fonts = {
-    fontconfig = {
-      enable = true;
-      defaultFonts = {
-        emoji = [ "Noto Emoji" ];
-        serif = [ "Noto Serif" ];
-        sansSerif = [ "Noto Sans" ];
-        monospace = [ "FiraCode Nerd Font Mono" ];
-      };
-    };
-  };
-
-  programs = {
-    home-manager.enable = true;
-    direnv = {
-      enable = true;
-      nix-direnv = {
-        enable = true;
-      };
-    };
-    git.extraConfig.gpg.ssh.program = "${pkgs._1password-gui}/share/1password/op-ssh-sign";
-  };
-
-  services = {
-    flatpak = {
-      enable = true;
-      packages = [
-        "com.spotify.Client"
-        "com.github.tchx84.Flatseal"
-        "net.nokyan.Resources"
-        "im.riot.Riot"
-      ];
-    };
   };
 }

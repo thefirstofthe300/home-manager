@@ -2,25 +2,7 @@
 {
   imports = [ ../profiles/personal.nix ];
 
-  nixpkgs.config.allowUnfreePredicate = (pkg: true);
-
-  home = {
-    username = "dseymour";
-    homeDirectory = "/home/dseymour";
-    stateVersion = "24.05";
-  };
-
-  fonts = {
-    fontconfig = {
-      enable = true;
-      defaultFonts = {
-        emoji = [ "Noto Emoji" ];
-        serif = [ "Noto Serif" ];
-        sansSerif = [ "Noto Sans" ];
-        monospace = [ "FiraCode Nerd Font Mono" ];
-      };
-    };
-  };
+  features.development.enable = true;
 
   dconf = {
     settings = {
@@ -35,16 +17,12 @@
     };
   };
 
-  programs.home-manager.enable = true;
-
-  services = {
-    flatpak = {
-      enable = true;
-      packages = [
-        "com.spotify.Client"
-        "com.github.tchx84.Flatseal"
-        "net.nokyan.Resources"
-      ];
-    };
+  services.flatpak = {
+    enable = true;
+    packages = [
+      "com.spotify.Client"
+      "com.github.tchx84.Flatseal"
+      "net.nokyan.Resources"
+    ];
   };
 }

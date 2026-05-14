@@ -5,9 +5,9 @@
   ...
 }:
 {
-  options.myConfig.kubernetes.enable = lib.mkEnableOption "Kubernetes development tools";
+  options.features.kubernetes.enable = lib.mkEnableOption "Kubernetes development tools";
 
-  config = lib.mkIf config.myConfig.kubernetes.enable {
+  config = lib.mkIf config.features.kubernetes.enable {
     home.packages = with pkgs; [
       kubectl
       kubernetes-helm
