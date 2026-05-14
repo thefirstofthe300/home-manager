@@ -43,12 +43,18 @@ Note which PRs have merged (relevant to Jira comment and transition drafts in th
 
 ## Step 4 — Draft Jira updates
 
-For each ticket where today's work is relevant, draft a comment. Incorporate PR status from Step 3 — e.g., if a PR merged, say so; if it's open and awaiting review, say that. Keep comments:
+For each ticket where today's work is relevant, draft a single cohesive comment that synthesizes what was accomplished and the current PR state into one natural narrative — not two separate blocks. The PR status is context that shapes how you describe the work, not a separate item to append.
+
+Good: "Completed the OpenTelemetry Operator and Collector deployment for gremlin-ai — operator uses cert-manager managed webhook TLS, collector runs as a DaemonSet with OTLP receivers and Kubernetes metadata enrichment. PR #1082 is open and awaiting first review."
+
+Avoid: "Work done: deployed OTel Operator and Collector. PR status: #1082 open, no reviews."
+
+Keep comments:
 - **High-level**: outcomes and status, not implementation details
 - **Brief**: 2–4 sentences max
-- **Accurate**: only include things that actually happened
+- **Cohesive**: one narrative, not labelled sections
 
-Also flag any tickets where the **status looks stale or wrong** — e.g., "Pending Feedback" on a ticket where no PR exists, or "Blocked" where the blocker has been resolved. For tickets whose PR merged, propose transitioning to Done.
+Also flag any tickets where the **status looks stale or wrong**. For tickets whose PR merged, include that in the comment and propose transitioning the ticket to Done.
 
 Present all drafts to the user before posting anything. Format like:
 
@@ -78,7 +84,27 @@ Keep it to 4–6 bullet points. Be specific about the action, not just the ticke
 
 ## Step 7 — Send to Slack
 
-Send a combined summary to the user via Slack DM using `mcp__plugin_slack_slack__slack_send_message` with `channel_id: U03BZF4FQ0K`. Include both the PR status table and tomorrow's priorities. Use Slack markdown (**bold** for section headers).
+Send a standup-style summary to the user via Slack DM using `mcp__plugin_claude_ai_Slack__slack_send_message` with `channel_id: U03BZF4FQ0K`.
+
+Format the message as a classic standup update with three sections:
+
+```
+*Yesterday*
+• <one bullet per meaningful outcome — what shipped, what moved forward>
+
+*Today*
+• <one bullet per tomorrow's priority from Step 6>
+
+*Blockers*
+• <any blockers, or "None" if clear>
+```
+
+Rules for standup format:
+- Each bullet is one sentence, action-oriented, past tense for yesterday and future tense for today
+- Reference ticket numbers inline where relevant (e.g., "Opened PR #1082 for EN-4321")
+- Skip the PR status table — the standup bullets should subsume that information
+- Keep the whole message under 15 lines; if there's more to say, trim ruthlessly
+- Use Slack `*bold*` for section headers, plain `-` or `•` for bullets
 
 If Slack isn't authenticated, prompt the user to authenticate and wait for confirmation before proceeding.
 
