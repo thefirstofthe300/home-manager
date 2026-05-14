@@ -101,7 +101,7 @@ Format the message as a classic standup update with three sections:
 
 Rules for standup format:
 - Each bullet is one sentence, action-oriented, past tense for yesterday and future tense for today
-- Reference ticket numbers inline where relevant (e.g., "Opened PR #1082 for EN-4321")
+- Reference ticket numbers and PR numbers as Slack hyperlinks: `<URL|display text>` (e.g., `<https://gremlininc.atlassian.net/browse/EN-4321|EN-4321>` and `<https://github.com/Gremlin-Ltd/gremlin/pull/1082|#1082>`). Use the actual URLs from the Jira and GitHub data already fetched in earlier steps — never construct URLs from memory.
 - Skip the PR status table — the standup bullets should subsume that information
 - Keep the whole message under 15 lines; if there's more to say, trim ruthlessly
 - Use Slack `*bold*` for section headers, plain `-` or `•` for bullets
