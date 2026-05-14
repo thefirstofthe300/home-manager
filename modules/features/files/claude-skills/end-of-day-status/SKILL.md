@@ -1,0 +1,90 @@
+---
+name: end-of-day-status
+description: End-of-day sync — reviews today's work, drafts Jira ticket updates for review, generates tomorrow's priority list, and sends it to Slack. Use this skill when the user asks what they got done today, wants to update their Jira tickets, needs a summary for tomorrow, wants to send a standup/EOD update, or says anything like "wrap up the day", "end of day", "what did I do today", "update my tickets", or "send my priorities to Slack". Trigger proactively any time the conversation has covered significant work and the user seems to be wrapping up.
+---
+
+# End-of-Day Sync
+
+Automates the end-of-day workflow: review today's work → draft Jira updates → get approval → post → summarize tomorrow → send to Slack.
+
+## Step 1 — Gather today's work
+
+Query the claude-mem MCP server directly for all observations recorded today. Use `mcp__plugin_claude-mem_mcp-search__timeline` to retrieve recent observations, then filter to entries dated today (today's date is always in the `currentDate` system context). If `timeline` doesn't return enough detail, supplement with `mcp__plugin_claude-mem_mcp-search__observation_search` using today's date as a filter. Do not rely solely on the system-reminder timeline summary — always fetch fresh data from the MCP server.
+
+Once you have the full list, load full details for any observations that look relevant but are sparse using `mcp__plugin_claude-mem_mcp-search__get_observations` with the relevant IDs.
+
+Summarize what was actually completed today in plain terms — no implementation details, just outcomes (e.g., "Prometheus deployed to gremlin-ai, PR #1071 ready for review").
+
+## Step 2 — Pull open Jira tickets
+
+Search for all tickets assigned to the current user that aren't done:
+
+```
+JQL: assignee = currentUser() AND statusCategory != Done ORDER BY updated DESC
+```
+
+Use `mcp__plugin_claude-code-home-manager_jira-mcp__jira_search_issues` (max 25). Then read full details for the tickets that are active or recently touched — skip anything stale (no updates in several weeks) unless it's obviously relevant to today's work.
+
+## Step 3 — Check open PR statuses
+
+Find all PRs referenced in today's observations or open Jira tickets. For each, run:
+
+```
+gh pr view <number> --repo <org/repo> --json state,title,reviews,mergedAt,url
+```
+
+Run all lookups in parallel. Summarize results as a table:
+
+| PR | Ticket | Status |
+|----|--------|--------|
+| #NNNN — title | EN-XXXXX | ✅ Merged / 🟡 Open, N reviews / 🔴 Closed |
+
+Note which PRs have merged (relevant to Jira comment and transition drafts in the next step) and which are still open with or without reviews (feeds into tomorrow's priorities).
+
+## Step 4 — Draft Jira updates
+
+For each ticket where today's work is relevant, draft a comment. Incorporate PR status from Step 3 — e.g., if a PR merged, say so; if it's open and awaiting review, say that. Keep comments:
+- **High-level**: outcomes and status, not implementation details
+- **Brief**: 2–4 sentences max
+- **Accurate**: only include things that actually happened
+
+Also flag any tickets where the **status looks stale or wrong** — e.g., "Pending Feedback" on a ticket where no PR exists, or "Blocked" where the blocker has been resolved. For tickets whose PR merged, propose transitioning to Done.
+
+Present all drafts to the user before posting anything. Format like:
+
+---
+**EN-XXXXX** — [Ticket title]
+> [Draft comment text]
+
+---
+
+Ask: "Ready to post these, or any changes?" Do not post until the user confirms.
+
+## Step 5 — Post approved comments
+
+Once the user approves, post each comment using `mcp__plugin_claude-code-home-manager_jira-mcp__jira_add_comment`.
+
+Then address any stale status flags: for each one, use `mcp__plugin_claude-code-home-manager_jira-mcp__jira_list_transitions` to see available transitions, propose the right one, and ask for confirmation before applying it via `mcp__plugin_claude-code-home-manager_jira-mcp__jira_transition_issue`.
+
+## Step 6 — Generate tomorrow's priorities
+
+Based on current ticket and PR states, write a short priority list for tomorrow. Focus on:
+- PRs awaiting first review or merge
+- Blockers that need external coordination
+- Next implementation steps for in-flight work
+- Backlog items available if the above move fast
+
+Keep it to 4–6 bullet points. Be specific about the action, not just the ticket name.
+
+## Step 7 — Send to Slack
+
+Send a combined summary to the user via Slack DM using `mcp__plugin_slack_slack__slack_send_message` with `channel_id: U03BZF4FQ0K`. Include both the PR status table and tomorrow's priorities. Use Slack markdown (**bold** for section headers).
+
+If Slack isn't authenticated, prompt the user to authenticate and wait for confirmation before proceeding.
+
+## Tone and style
+
+- Conversational at review steps — always pause and wait for user approval before posting or making transitions
+- Autonomous for read-only steps — don't ask permission to read tickets or observations
+- No implementation details in Jira comments (no namespace names, service URLs, config values, etc.)
+- Status transitions are low-risk but still confirm before applying
