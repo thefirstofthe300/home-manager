@@ -9,11 +9,20 @@ Automates the end-of-day workflow: review today's work → draft Jira updates �
 
 ## Step 1 — Gather today's work
 
-Query the claude-mem MCP server directly for all observations recorded today. Use `mcp__plugin_claude-mem_mcp-search__timeline` to retrieve recent observations, then filter to entries dated today (today's date is always in the `currentDate` system context). If `timeline` doesn't return enough detail, supplement with `mcp__plugin_claude-mem_mcp-search__observation_search` using today's date as a filter. Do not rely solely on the system-reminder timeline summary — always fetch fresh data from the MCP server.
+Query the claude-mem MCP server for all observations recorded today **across every project**, not just the current one.
+
+1. Call `mcp__plugin_claude-mem_mcp-search__list_corpora` to enumerate all available corpora.
+2. For each corpus, call `mcp__plugin_claude-mem_mcp-search__timeline` to fetch recent observations, filtering to entries dated today (today's date is always in the `currentDate` system context). Run all corpus queries in parallel.
+3. If `timeline` doesn't return enough detail for a corpus, supplement with `mcp__plugin_claude-mem_mcp-search__observation_search` using today's date as a filter.
+4. Aggregate results across all corpora before proceeding.
+
+Do not rely solely on the system-reminder timeline summary — always fetch fresh data from the MCP server.
 
 Once you have the full list, load full details for any observations that look relevant but are sparse using `mcp__plugin_claude-mem_mcp-search__get_observations` with the relevant IDs.
 
 Summarize what was actually completed today in plain terms — no implementation details, just outcomes (e.g., "Prometheus deployed to gremlin-ai, PR #1071 ready for review").
+
+**Filter**: only include work that has an associated Jira ticket or open PR. Discard observations that are purely local/config work with no ticket and no PR — they don't belong in Jira comments or the standup.
 
 ## Step 2 — Pull open Jira tickets
 

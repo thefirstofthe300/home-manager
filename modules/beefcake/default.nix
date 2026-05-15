@@ -137,6 +137,7 @@ in
 
   features.development.gremlinSkillsPath = "/home/dseymour/workspace/github.com/gremlin/gremlin-ai-skills";
   features.development.jiraEmail = "danny.seymour@gremlin.com";
+  features.development.enableObserveMcp = true;
 
   home = {
     packages = with pkgs; [
