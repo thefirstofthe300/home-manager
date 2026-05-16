@@ -37,14 +37,22 @@ in
       default = "";
       description = "Email address used for JIRA MCP integration.";
     };
+
+    enableObserveMcp = lib.mkEnableOption "Observe MCP server";
   };
 
   config = lib.mkIf cfg.enable {
-    sops.secrets = lib.mkIf (cfg.gremlinSkillsPath != "") {
-      jira-api-token = {
-        sopsFile = ../../secrets/common.yaml;
+    sops.secrets =
+      lib.optionalAttrs cfg.enableObserveMcp {
+        observe-auth-header = {
+          sopsFile = ../../secrets/common.yaml;
+        };
+      }
+      // lib.optionalAttrs (cfg.gremlinSkillsPath != "") {
+        jira-api-token = {
+          sopsFile = ../../secrets/common.yaml;
+        };
       };
-    };
 
     programs = {
       claude-code = {
@@ -123,7 +131,7 @@ in
         nextcloud = {
           command = "npx";
           args = [
-            "mcp-remote"
+            "mcp-remote@latest"
             "https://cloud-mcp.seymour.family/mcp"
             "3334"
             "--static-oauth-client-info"
@@ -140,6 +148,20 @@ in
         };
         todoist = {
           "url" = "https://ai.todoist.net/mcp";
+        };
+      }
+      // lib.optionalAttrs cfg.enableObserveMcp {
+        observe = {
+          command = lib.getExe (
+            pkgs.writeShellApplication {
+              name = "observe-mcp";
+              runtimeInputs = [ pkgs.nodejs ];
+              text = ''
+                AUTH_HEADER=$(cat ${lib.escapeShellArg config.sops.secrets.observe-auth-header.path})
+                exec npx mcp-remote@latest "https://136981668482.observeinc.com/v1/ai/mcp" --header "Authorization:$AUTH_HEADER"
+              '';
+            }
+          );
         };
       }
       // lib.optionalAttrs (cfg.gremlinSkillsPath != "") {
