@@ -139,6 +139,10 @@ in
   features.development.jiraEmail = "danny.seymour@gremlin.com";
   features.development.enableObserveMcp = true;
 
+  programs.mcp.servers.datadog = {
+    url = "https://mcp.datadoghq.com/api/unstable/mcp-server/mcp?toolsets=core,alerting,dashboards";
+  };
+
   home = {
     packages = with pkgs; [
       jetbrains.idea

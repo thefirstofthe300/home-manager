@@ -22,7 +22,7 @@ Once you have the full list, load full details for any observations that look re
 
 Summarize what was actually completed today in plain terms — no implementation details, just outcomes (e.g., "Prometheus deployed to gremlin-ai, PR #1071 ready for review").
 
-**Filter**: only include work that has an associated Jira ticket or open PR. Discard observations that are purely local/config work with no ticket and no PR — they don't belong in Jira comments or the standup.
+**Filter**: only include work that has an associated Jira ticket or open PR. Discard observations that are purely local/config work with no ticket and no PR — they don't belong in Jira comments or the standup. PRs in personal repos (`github.com/thefirstofthe300/*`) do not count — only PRs in work repos qualify.
 
 ## Step 2 — Pull open Jira tickets
 
