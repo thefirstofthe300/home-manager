@@ -89,6 +89,10 @@ in
     sopsFile = ../../secrets/common.yaml;
   };
 
+  sops.secrets.gremlin-api-key = {
+    sopsFile = ../../secrets/common.yaml;
+  };
+
   features.vllm = {
     enable = true;
     model = "google/gemma-4-E2B";
@@ -141,6 +145,20 @@ in
 
   programs.mcp.servers.datadog = {
     url = "https://mcp.datadoghq.com/api/unstable/mcp-server/mcp?toolsets=core,alerting,dashboards";
+  };
+
+  programs.mcp.servers.gremlin = {
+    command = lib.getExe (
+      pkgs.writeShellApplication {
+        name = "gremlin-mcp";
+        runtimeInputs = [ pkgs.nodejs ];
+        text = ''
+          GREMLIN_API_KEY=$(cat ${lib.escapeShellArg config.sops.secrets.gremlin-api-key.path})
+          export GREMLIN_API_KEY
+          exec npx -y @gremlin/mcp-server "$@"
+        '';
+      }
+    );
   };
 
   home = {
