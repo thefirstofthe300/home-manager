@@ -205,6 +205,7 @@ in
       kubeconform
       kustomize
       nodejs
+      pnpm
       kyverno-chainsaw
       rabbitmqadmin-ng
       rustc
