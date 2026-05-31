@@ -63,6 +63,7 @@ in
         skills = ./files/claude-skills;
         settings = {
           model = "claude-sonnet-4-6";
+          skipAutoPermissionPrompt = true;
           permissions = {
             defaultMode = "auto";
             allow = [
@@ -85,6 +86,7 @@ in
             "feature-dev@claude-plugins-official" = true;
             "document-skills@anthropic-agent-skills" = true;
             "gitops-skills@fluxcd" = true;
+            "rendercv@rendercv" = true;
           };
           extraKnownMarketplaces = {
             "anthropic-agent-skills" = {
@@ -103,6 +105,12 @@ in
               "source" = {
                 "source" = "github";
                 "repo" = "thedotmack/claude-mem";
+              };
+            };
+            "rendercv" = {
+              "source" = {
+                "source" = "github";
+                "repo" = "rendercv/rendercv-skill";
               };
             };
           }
