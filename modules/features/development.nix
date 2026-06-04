@@ -61,6 +61,9 @@ in
         context = ./files/claude-context/CLAUDE.md;
         rulesDir = ./files/claude-rules;
         skills = ./files/claude-skills;
+        commands = {
+          code-review = ./files/claude-commands/code-review.md;
+        };
         settings = {
           model = "claude-sonnet-4-6";
           skipAutoPermissionPrompt = true;
@@ -86,7 +89,6 @@ in
             "feature-dev@claude-plugins-official" = true;
             "document-skills@anthropic-agent-skills" = true;
             "gitops-skills@fluxcd" = true;
-            "rendercv@rendercv" = true;
           };
           extraKnownMarketplaces = {
             "anthropic-agent-skills" = {
@@ -105,12 +107,6 @@ in
               "source" = {
                 "source" = "github";
                 "repo" = "thedotmack/claude-mem";
-              };
-            };
-            "rendercv" = {
-              "source" = {
-                "source" = "github";
-                "repo" = "rendercv/rendercv-skill";
               };
             };
           }
@@ -145,14 +141,6 @@ in
             "--static-oauth-client-info"
             "@${config.xdg.configHome}/mcp-remote/nextcloud-oauth.json"
           ];
-        };
-        mcp-search = {
-          command = "npx";
-          args = [
-            "-y"
-            "claude-mem@latest"
-          ];
-          env = { };
         };
         todoist = {
           "url" = "https://ai.todoist.net/mcp";
