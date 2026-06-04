@@ -89,6 +89,7 @@ in
             "feature-dev@claude-plugins-official" = true;
             "document-skills@anthropic-agent-skills" = true;
             "gitops-skills@fluxcd" = true;
+            "warp@claude-code-warp" = true;
           };
           extraKnownMarketplaces = {
             "anthropic-agent-skills" = {
