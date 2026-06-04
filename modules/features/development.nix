@@ -61,8 +61,12 @@ in
         context = ./files/claude-context/CLAUDE.md;
         rulesDir = ./files/claude-rules;
         skills = ./files/claude-skills;
+        commands = {
+          code-review = ./files/claude-commands/code-review.md;
+        };
         settings = {
           model = "claude-sonnet-4-6";
+          skipAutoPermissionPrompt = true;
           permissions = {
             defaultMode = "auto";
             allow = [
@@ -137,14 +141,6 @@ in
             "--static-oauth-client-info"
             "@${config.xdg.configHome}/mcp-remote/nextcloud-oauth.json"
           ];
-        };
-        mcp-search = {
-          command = "npx";
-          args = [
-            "-y"
-            "claude-mem@latest"
-          ];
-          env = { };
         };
         todoist = {
           "url" = "https://ai.todoist.net/mcp";
