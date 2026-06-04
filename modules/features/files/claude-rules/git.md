@@ -11,6 +11,12 @@ Example:
 <Jira_ticket>/<description>
 ```
 
+## Committing Changes
+
+Before creating a commit, show the proposed commit message and wait. The user may request changes before committing — never commit automatically during this review cycle. Only run `git commit` when the user explicitly says to proceed.
+
+Never push to GitHub (`git push`) or create a pull request unless the user explicitly asks for it.
+
 ## Commit Messages
 All commits must follow the Conventional Commits v1.0.0 specification:
 
