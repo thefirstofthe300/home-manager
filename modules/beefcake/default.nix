@@ -94,7 +94,7 @@ in
   };
 
   features.vllm = {
-    enable = true;
+    enable = false;
     model = "google/gemma-4-E2B";
     toolCallParser = "pythonic";
     hfTokenFile = config.sops.secrets.hf-token.path;

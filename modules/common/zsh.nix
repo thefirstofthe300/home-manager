@@ -22,7 +22,7 @@
 
       shellAliases = {
         ll = "ls -l";
-        update = "home-manager switch";
+        nixup = "home-manager switch";
       };
       history = {
         size = 10000;
