@@ -38,3 +38,10 @@
 - **Dependencies need strong justification.** Only add one if it meaningfully simplifies a significant portion of code and is actively maintained.
 - **Refactoring is separate from feature work.** Never mix refactor commits with feature commits. When you spot a refactoring opportunity, flag it and ask — do not act on it unilaterally.
 - **Incremental improvement over rewrite.** Always prefer improving what exists over starting fresh.
+- **Before writing code, stop at the first rung of this ladder that holds:**
+  1. Does this need to exist at all? Speculative need → skip it. (YAGNI)
+  2. Does the stdlib do it? Use it.
+  3. Does a native platform feature cover it? (`<input type="date">` over a picker lib, CSS over JS, DB constraint over app code.) Use it.
+  4. Does an already-installed dependency solve it? Use it. Never add a new one for what a few lines can do.
+  5. Can it be one line? Make it one line.
+  6. Only then: write the minimum code that works.
