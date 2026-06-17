@@ -70,6 +70,18 @@ Current features: `kubernetes`, `cloud`, `development`, `sbom`, `local-llm`, `vl
 - `stateVersion` is set to `"24.05"` across all hosts — do not change this without understanding Home Manager state version implications.
 - SSH uses 1Password's identity agent (`~/.1password/agent.sock`). Git commits are signed with SSH keys via 1Password.
 
+## Dotfiles
+
+**Always make dotfile changes through this repo's Nix home-manager modules, not by editing dotfiles directly.** Home Manager owns any file it manages — direct edits will be overwritten on the next `home-manager switch`.
+
+To check whether a dotfile is home-manager-managed, verify it's a symlink into the Nix store:
+
+```bash
+readlink ~/.someconfig  # managed if it points to /nix/store/...
+```
+
+Only edit a dotfile directly if home-manager has no module option for that configuration. In that case, use `home.file` or `xdg.configFile` in the appropriate module to manage it as a raw file through Nix instead, if possible. Consult the [Home Manager options reference](https://nix-community.github.io/home-manager/options.xhtml) before concluding a setting is unsupported.
+
 ## References
 
 - **Home Manager options**: https://nix-community.github.io/home-manager/options.xhtml — use this as the authoritative reference for supported Home Manager options. Always use this link as the source to look up module options.
