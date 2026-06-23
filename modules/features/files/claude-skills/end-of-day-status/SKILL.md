@@ -11,14 +11,19 @@ Automates the end-of-day workflow: review today's work → draft Jira updates �
 
 Query the claude-mem MCP server for all observations recorded today **across every project**, not just the current one.
 
-1. Call `mcp__plugin_claude-mem_mcp-search__list_corpora` to enumerate all available corpora.
-2. For each corpus, call `mcp__plugin_claude-mem_mcp-search__timeline` to fetch recent observations, filtering to entries dated today (today's date is always in the `currentDate` system context). Run all corpus queries in parallel.
-3. If `timeline` doesn't return enough detail for a corpus, supplement with `mcp__plugin_claude-mem_mcp-search__observation_search` using today's date as a filter.
-4. Aggregate results across all corpora before proceeding.
-
 Do not rely solely on the system-reminder timeline summary — always fetch fresh data from the MCP server.
 
-Once you have the full list, load full details for any observations that look relevant but are sparse using `mcp__plugin_claude-mem_mcp-search__get_observations` with the relevant IDs.
+### Primary path — direct search (always run this)
+
+Call `mcp__plugin_claude-mem_mcp-search__search` with `dateStart` set to today's date (from the `currentDate` system context) and a broad query covering common work themes (e.g., "deployed committed PR fix feature"). Set `limit` to 25 and `orderBy` to `date_asc`. If 25 results come back, paginate with `offset: 25` to catch the full day.
+
+### Optional enhancement — corpora (run in parallel with the search above)
+
+Call `mcp__plugin_claude-mem_mcp-search__list_corpora`. If it returns any corpora, call `mcp__plugin_claude-mem_mcp-search__timeline` for each one in parallel, filtering to today. Merge any additional observations into the results from the primary path. If `list_corpora` returns an empty array, skip this step — corpora are an optional named-index layer on top of the raw observation store; their absence does not mean observations are missing.
+
+### Enrichment
+
+Once you have the combined list, load full details for observations that look relevant but are sparse using `mcp__plugin_claude-mem_mcp-search__get_observations` with the relevant IDs.
 
 Summarize what was actually completed today in plain terms — no implementation details, just outcomes (e.g., "Prometheus deployed to gremlin-ai, PR #1071 ready for review").
 
