@@ -206,6 +206,8 @@ in
       kyverno-chainsaw
       rabbitmqadmin-ng
       rustc
+      shellcheck
+      yamllint
     ];
   };
 }
