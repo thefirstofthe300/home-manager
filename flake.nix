@@ -2,9 +2,13 @@
   description = "Home Manager configuration for Daniel Seymour";
 
   nixConfig = {
-    extra-substituters = [ "https://cache.nixos-cuda.org" ];
+    extra-substituters = [ 
+"https://cache.nixos-cuda.org" 
+"https://cache.flox.dev"
+];
     extra-trusted-public-keys = [
       "cache.nixos-cuda.org:74DUi4Ye579gUqzH4ziL9IyiJBlDpMRn9MBN8oNan9M="
+      "flox-cache-public-1:7F4OyH7ZCnFhcze3fJdfyXYLQw/aV7GEed86nQ7IsOs="
     ];
   };
 
@@ -26,6 +30,9 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    flox = {
+      url = "github:flox/flox/latest";
+    };
   };
 
   outputs =
@@ -35,11 +42,15 @@
       nixgl,
       nix-flatpak,
       sops-nix,
+      flox,
       ...
     }:
     let
       system = "x86_64-linux";
-      pkgs = nixpkgs.legacyPackages.${system};
+      pkgs = import nixpkgs {
+        inherit system;
+        overlays = [ (_: _: { flox = flox.packages.${system}.default; }) ];
+      };
     in
     {
       homeConfigurations = {

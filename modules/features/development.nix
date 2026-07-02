@@ -207,6 +207,7 @@ in
     };
 
     home.packages = with pkgs; [
+      flox
       cobra-cli
       bun
       uvWithChromaFix
