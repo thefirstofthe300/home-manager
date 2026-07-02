@@ -1,3 +1,6 @@
 # Nix build output symlink
 result
 result-*
+
+# Serena MCP per-project state (config, cache, memories)
+.serena/

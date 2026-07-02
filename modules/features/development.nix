@@ -11,6 +11,7 @@ let
     nextcloud = true;
     todoist = true;
     circleci = true;
+    serena = true;
     observe = false;
     jira = false;
   };
@@ -78,7 +79,7 @@ in
       default = { };
       description = ''
         Which MCP servers to enable, keyed by server name, overriding the defaults
-        (kubernetes, nextcloud, todoist, circleci = true; observe, jira = false). jira
+        (kubernetes, nextcloud, todoist, circleci, serena = true; observe, jira = false). jira
         additionally requires gremlinSkillsPath to be set.
       '';
     };
@@ -202,6 +203,17 @@ in
             args = [
               "mcp"
               "start"
+            ];
+          };
+        }
+        // lib.optionalAttrs mcp.serena {
+          serena = {
+            command = lib.getExe pkgs.serena;
+            args = [
+              "start-mcp-server"
+              "--context"
+              "claude-code"
+              "--project-from-cwd"
             ];
           };
         }

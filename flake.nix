@@ -33,6 +33,9 @@
     flox = {
       url = "github:flox/flox/latest";
     };
+    serena = {
+      url = "github:oraios/serena";
+    };
   };
 
   outputs =
@@ -43,13 +46,19 @@
       nix-flatpak,
       sops-nix,
       flox,
+      serena,
       ...
     }:
     let
       system = "x86_64-linux";
       pkgs = import nixpkgs {
         inherit system;
-        overlays = [ (_: _: { flox = flox.packages.${system}.default; }) ];
+        overlays = [
+          (_: _: {
+            flox = flox.packages.${system}.default;
+            serena = serena.packages.${system}.serena;
+          })
+        ];
       };
     in
     {
