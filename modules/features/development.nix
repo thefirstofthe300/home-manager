@@ -10,6 +10,7 @@ let
     kubernetes = true;
     nextcloud = true;
     todoist = true;
+    circleci = true;
     observe = false;
     jira = false;
   };
@@ -31,6 +32,30 @@ let
       pkgs.uv
     ];
   };
+  circleci-cli = pkgs.circleci-cli.overrideAttrs (old: rec {
+    version = "1.0.42707-pre";
+    src = pkgs.fetchFromGitHub {
+      owner = "CircleCI-Public";
+      repo = "circleci-cli";
+      rev = "v${version}";
+      hash = "sha256-ltmRA8XlWFd8A2CD7bynpfyA3eab1sCRtRP8pPEvezw=";
+    };
+    vendorHash = "sha256-6FxItn+I2AyEQr7LMyUBcaDDOo/JE7g5tEF0o0VwE9Q=";
+    ldflags = [
+      "-s"
+      "-w"
+      "-X github.com/CircleCI-Public/circleci-cli/version.Version=${version}"
+      "-X github.com/CircleCI-Public/circleci-cli/version.Commit=v${version}"
+      "-X github.com/CircleCI-Public/circleci-cli/version.packageManager=nix"
+      "-buildid="
+    ];
+    # v1.0.x builds the binary as 'circleci' directly; v0.1.x built 'circleci-cli' and renamed it
+    postInstall = ''
+      installShellCompletion --cmd circleci \
+        --bash <(HOME=$TMPDIR $out/bin/circleci completion bash --skip-update-check) \
+        --zsh <(HOME=$TMPDIR $out/bin/circleci completion zsh --skip-update-check)
+    '';
+  });
 in
 {
   options.features.development = {
@@ -53,7 +78,7 @@ in
       default = { };
       description = ''
         Which MCP servers to enable, keyed by server name, overriding the defaults
-        (kubernetes, nextcloud, todoist, jira = true; observe = false). jira
+        (kubernetes, nextcloud, todoist, circleci = true; observe, jira = false). jira
         additionally requires gremlinSkillsPath to be set.
       '';
     };
@@ -169,6 +194,15 @@ in
         // lib.optionalAttrs mcp.todoist {
           todoist = {
             "url" = "https://ai.todoist.net/mcp";
+          };
+        }
+        // lib.optionalAttrs mcp.circleci {
+          circleci = {
+            command = lib.getExe circleci-cli;
+            args = [
+              "mcp"
+              "start"
+            ];
           };
         }
         // lib.optionalAttrs mcp.observe {
