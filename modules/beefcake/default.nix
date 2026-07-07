@@ -141,7 +141,10 @@ in
 
   features.development.gremlinSkillsPath = "/home/dseymour/workspace/github.com/gremlin/gremlin-ai-skills";
   features.development.jiraEmail = "danny.seymour@gremlin.com";
-  features.development.enableObserveMcp = true;
+  features.development.mcp = {
+    observe = true;
+    jira = true;
+  };
 
   programs.mcp.servers.datadog = {
     url = "https://mcp.datadoghq.com/api/unstable/mcp-server/mcp?toolsets=core,alerting,dashboards";
