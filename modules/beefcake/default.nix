@@ -139,29 +139,33 @@ in
     };
   };
 
-  features.development.gremlinSkillsPath = "/home/dseymour/workspace/github.com/gremlin/gremlin-ai-skills";
-  features.development.jiraEmail = "danny.seymour@gremlin.com";
-  features.development.mcp = {
-    observe = true;
-    jira = true;
+  features.development = {
+    gremlinSkillsPath = "/home/dseymour/workspace/github.com/gremlin/gremlin-ai-skills";
+    jiraEmail = "danny.seymour@gremlin.com";
+    mcp = {
+      observe = true;
+      jira = true;
+    };
   };
 
-  programs.mcp.servers.datadog = {
-    url = "https://mcp.datadoghq.com/api/unstable/mcp-server/mcp?toolsets=core,alerting,dashboards";
-  };
+  programs.mcp.servers = {
+    datadog = {
+      url = "https://mcp.datadoghq.com/api/unstable/mcp-server/mcp?toolsets=core,alerting,dashboards";
+    };
 
-  programs.mcp.servers.gremlin = {
-    command = lib.getExe (
-      pkgs.writeShellApplication {
-        name = "gremlin-mcp";
-        runtimeInputs = [ pkgs.nodejs ];
-        text = ''
-          GREMLIN_API_KEY=$(cat ${lib.escapeShellArg config.sops.secrets.gremlin-api-key.path})
-          export GREMLIN_API_KEY
-          exec npx -y @gremlin/mcp-server "$@"
-        '';
-      }
-    );
+    gremlin = {
+      command = lib.getExe (
+        pkgs.writeShellApplication {
+          name = "gremlin-mcp";
+          runtimeInputs = [ pkgs.nodejs ];
+          text = ''
+            GREMLIN_API_KEY=$(cat ${lib.escapeShellArg config.sops.secrets.gremlin-api-key.path})
+            export GREMLIN_API_KEY
+            exec npx -y @gremlin/mcp-server "$@"
+          '';
+        }
+      );
+    };
   };
 
   home = {
