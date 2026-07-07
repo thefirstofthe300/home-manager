@@ -10,7 +10,7 @@ let
     kubernetes = true;
     nextcloud = true;
     todoist = true;
-    circleci = true;
+    circleci = false;
     serena = true;
     observe = false;
     jira = false;

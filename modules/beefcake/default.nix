@@ -145,6 +145,7 @@ in
     mcp = {
       observe = true;
       jira = true;
+      circleci = true;
     };
   };
 
