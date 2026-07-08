@@ -142,6 +142,7 @@ in
   features.development = {
     gremlinSkillsPath = "/home/dseymour/workspace/github.com/gremlin/gremlin-ai-skills";
     jiraEmail = "danny.seymour@gremlin.com";
+    workSkills = [ "investigate-alert" ];
     mcp = {
       observe = true;
       jira = true;

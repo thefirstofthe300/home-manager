@@ -65,13 +65,22 @@ in
     gremlinSkillsPath = lib.mkOption {
       type = lib.types.str;
       default = "";
-      description = "Absolute path to a local gremlin-ai-skills checkout. Enables the gremlin-ai-skills-dev marketplace when non-empty, and (together with mcp.jira) the jira-mcp server.";
+      description = "Absolute path to a local gremlin-ai-skills checkout. Enables the gremlin-ai-skills marketplace when non-empty, and (together with mcp.jira) the jira-mcp server.";
     };
 
     jiraEmail = lib.mkOption {
       type = lib.types.str;
       default = "";
       description = "Email address used for JIRA MCP integration.";
+    };
+
+    workSkills = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [ ];
+      description = ''
+        Names of plugins to enable from the gremlin-ai-skills marketplace (requires
+        gremlinSkillsPath to be set). These are work-only skills, e.g. "investigate-alert".
+      '';
     };
 
     mcp = lib.mkOption {
@@ -135,7 +144,10 @@ in
             "document-skills@anthropic-agent-skills" = true;
             "gitops-skills@fluxcd" = true;
             "warp@claude-code-warp" = true;
-          };
+          }
+          // lib.optionalAttrs (cfg.gremlinSkillsPath != "") (
+            lib.genAttrs (map (skill: "${skill}@gremlin-ai-skills") cfg.workSkills) (_: true)
+          );
           extraKnownMarketplaces = {
             "anthropic-agent-skills" = {
               "source" = {
@@ -157,7 +169,7 @@ in
             };
           }
           // lib.optionalAttrs (cfg.gremlinSkillsPath != "") {
-            "gremlin-ai-skills-dev" = {
+            "gremlin-ai-skills" = {
               "source" = {
                 "source" = "directory";
                 "path" = cfg.gremlinSkillsPath;
