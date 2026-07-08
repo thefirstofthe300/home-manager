@@ -53,10 +53,11 @@ phase's digest file when it returns, relay a short status update to the user, th
 2. **`flow-plan`** — discovers conventions/test harness, writes `plan.md`.
    **Hard checkpoint**: present the plan digest and wait for explicit approval or edits before
    continuing. Do not proceed to implementation without it.
-3. **`flow-implement`** — works the plan's checklist, commits locally as it goes, writes/updates
-   `progress.md`. No pause between commits — local commits during this workflow don't require
-   per-commit approval, but every commit message is still shown in the transcript for
-   visibility.
+3. **`flow-implement`** — works the plan's checklist, writing tests for each item by default
+   (a separate subagent from the one that implements it), commits locally as it goes, and
+   writes/updates `progress.md`. No pause between commits — local commits during this workflow
+   don't require per-commit approval, but every commit message is still shown in the transcript
+   for visibility.
 4. **`flow-validate`** — runs the discovered validation harness, writes `validation.md`. Only
    pauses if it exhausts its retry budget with unresolved failures — otherwise continues
    silently as part of the pipeline.

@@ -1,7 +1,8 @@
 # Discovering project conventions and validation harnesses
 
-Shared reference for `flow-plan` and `flow-validate`. Check sources in this order and stop as
-soon as you have a confident answer — don't run every heuristic every time.
+Shared reference for `flow-plan`, `flow-validate`, and `flow-implement`'s test writer. Check
+sources in this order and stop as soon as you have a confident answer — don't run every
+heuristic every time.
 
 ## 1. Explicit documentation (always check first)
 
@@ -30,13 +31,30 @@ Look for the file(s) present and infer the relevant commands:
 | `build.gradle`, `pom.xml` | Java/Kotlin | `./gradlew test`, `mvn test` |
 | `flake.nix` / `*.nix` (this kind of repo) | Nix/Home Manager | usually no test suite — validate via `home-manager switch --flake .#<target>` or `nix flake check` |
 
-## 3. CI configuration (most reliable ground truth if present)
+## 3. Coverage tooling (used by flow-implement's test writer)
+
+Check step 1's explicit docs first, same as above. If silent, infer from the ecosystem:
+
+| Ecosystem | Likely coverage command |
+|---|---|
+| Node/JS/TS | `jest --coverage`, `vitest run --coverage`, or `nyc`/`c8` wrapping the test command |
+| Python | `pytest --cov`, `coverage run -m pytest && coverage report` |
+| Rust | `cargo tarpaulin`, `cargo llvm-cov` |
+| Go | `go test ./... -cover`, `go tool cover -func=coverage.out` |
+| Java/Kotlin | JaCoCo via `./gradlew jacocoTestReport` or `mvn jacoco:report` |
+| Terraform/infra config | no meaningful line coverage concept — rely on `terraform validate`/`plan` review and estimate qualitatively instead |
+
+If none of these are wired up in the repo, don't add a coverage tool just to satisfy this —
+that's a bigger change than a single task warrants. Estimate coverage by reasoning through
+which branches/paths the new tests exercise instead, and say plainly that it's an estimate.
+
+## 4. CI configuration (most reliable ground truth if present)
 
 `.github/workflows/*.yml`, `.circleci/config.yml`, `.gitlab-ci.yml`, etc. — whatever commands CI
 actually runs are the real validation harness, even if they diverge from what a README claims.
 Prefer this over guessing from signal files alone when both are present.
 
-## 4. Still nothing found
+## 5. Still nothing found
 
 If none of the above yields a usable build/test/lint command, do not guess or invent one. Ask
 the user directly: name the repo, what you checked, and ask what command(s) validate a change

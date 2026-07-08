@@ -20,7 +20,7 @@ Spawn 1-3 subagents in parallel (Explore, or a general-purpose agent if the sear
 open-ended) covering:
 - Conventions and validation harness: follow
   `~/.claude/skills/flow-plan/references/discovery-heuristics.md`. Have the subagent report back
-  the actual commands (build/test/lint/typecheck), not just "tests exist."
+  the actual commands (build/test/lint/typecheck/coverage), not just "tests exist."
 - Similar existing code: features/modules/resources similar to what's being built, so the plan
   matches established patterns rather than inventing new ones.
 - Direct integration points: the specific files/modules/resources the task will touch.
@@ -57,6 +57,7 @@ Write `.claude/tasks/<slug>/plan.md`:
 - Test: <command>
 - Lint/format: <command>
 - Type-check: <command, if applicable>
+- Coverage: <command, if one exists — otherwise "none; estimate coverage manually">
 - Other required checks: <e.g. terraform validate, security scan>
 (mark any as "not found — confirmed with user: <their answer>" if discovery came up empty)
 
