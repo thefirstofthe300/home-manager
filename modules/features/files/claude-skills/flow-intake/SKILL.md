@@ -44,9 +44,9 @@ ticket details (freeform) or wait/retry.
 ## Step 4 — Set up the branch
 
 Check the repo's own conventions first (CLAUDE.md, existing branch names via `git branch -a` /
-`git log --all --oneline -20` for a pattern). Absent a repo-specific convention, default to the
-standing rule: `<Jira_ticket>/<short-description>`, or `<type>/<slug>` (conventional-commit type
-prefix) when there's no ticket.
+`git log --all --oneline -20` for a pattern). Absent a repo-specific convention, default to
+`<Jira_ticket>/<short-description>`, or `<type>/<slug>` (conventional-commit type prefix) when
+there's no ticket.
 
 ```
 git checkout -b <branch-name>

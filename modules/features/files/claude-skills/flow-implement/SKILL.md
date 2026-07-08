@@ -33,12 +33,11 @@ consumer before the thing it depends on):
    judgment; ask the user if it's a real fork in the road.
 4. Commit the change locally:
    - Determine the commit convention: check the repo's own git log for its existing style; if
-     none is evident, use Conventional Commits (matches your default).
+     none is evident, use Conventional Commits.
    - One logical change per commit — if the subagent's work naturally splits into more than one
      commit-worthy piece, commit them separately.
-   - This workflow auto-commits locally without pausing for approval (per your standing
-     decision for `flow`) — but still show the commit message in the transcript as it happens,
-     so there's a visible trail.
+   - This workflow auto-commits locally without pausing for approval — but still show the
+     commit message in the transcript as it happens, so there's a visible trail.
 5. Mark the item checked in `progress.md`, and append a line noting the commit hash + one-line
    summary.
 

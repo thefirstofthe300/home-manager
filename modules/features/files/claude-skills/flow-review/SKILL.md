@@ -17,8 +17,9 @@ full diff range — but don't read the diff into your own context. Pass the rang
 
 ## Step 2 — Spawn parallel review lenses
 
-Spawn independent general-purpose subagents, each with a distinct lens via a focused prompt —
-tell each one explicitly to only report findings, not to edit any files:
+Read `agents/reviewer.md` for the reviewer persona/instructions. Spawn one general-purpose
+subagent per lens, using that file's content as the base prompt plus the specific lens and diff
+range appended:
 
 1. **Correctness/bugs** — logic errors, edge cases, error handling gaps.
 2. **Security** — injection, auth/permission issues, secrets, unsafe deserialization, etc.

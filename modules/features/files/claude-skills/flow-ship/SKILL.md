@@ -6,8 +6,8 @@ description: Final phase of the flow pipeline — drafts a PR title/body from th
 # Flow: Ship
 
 Turn an approved, validated, reviewed branch into a pull request. This is the one phase that
-**always** stops and asks — pushing to a remote and opening a PR are shared-state actions your
-standing git rules require explicit confirmation for, every time, no exceptions for autonomous
+**always** stops and asks — pushing to a remote and opening a PR are shared-state, hard-to-
+reverse actions that deserve an explicit go-ahead every time, with no exceptions for autonomous
 runs.
 
 ## Step 1 — Gather context

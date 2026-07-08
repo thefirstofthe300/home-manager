@@ -56,8 +56,7 @@ phase's digest file when it returns, relay a short status update to the user, th
 3. **`flow-implement`** — works the plan's checklist, commits locally as it goes, writes/updates
    `progress.md`. No pause between commits — local commits during this workflow don't require
    per-commit approval, but every commit message is still shown in the transcript for
-   visibility. (This differs from your default git.md commit rule, which applies to commits you
-   ask for outside this workflow.)
+   visibility.
 4. **`flow-validate`** — runs the discovered validation harness, writes `validation.md`. Only
    pauses if it exhausts its retry budget with unresolved failures — otherwise continues
    silently as part of the pipeline.
@@ -67,8 +66,7 @@ phase's digest file when it returns, relay a short status update to the user, th
    here.
 6. **`flow-ship`** — drafts the PR title/body and shows the commit list.
    **Hard checkpoint, no exceptions**: always ask for explicit go-ahead before this skill
-   pushes the branch or opens the PR, regardless of how autonomous the rest of the run was —
-   this matches your standing git rule that pushes and PRs always require explicit ask.
+   pushes the branch or opens the PR, regardless of how autonomous the rest of the run was.
 
 ## After the PR is open
 
