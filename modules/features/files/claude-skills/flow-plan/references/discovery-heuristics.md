@@ -42,3 +42,20 @@ If none of the above yields a usable build/test/lint command, do not guess or in
 the user directly: name the repo, what you checked, and ask what command(s) validate a change
 here. Record their answer in `plan.md` so later phases (and future runs) don't have to ask
 again.
+
+Once you have the answer, also ask whether they want it documented in the repo itself, not just
+in `plan.md` — this is a one-time cost that saves every future run (and every other person or
+agent) from hitting the same gap. Be intelligent about where it belongs, don't just default to
+one file:
+
+- If a root (or nested, near the relevant code) `CLAUDE.md` already exists, offer to append the
+  command(s) there under a fitting existing section (or a new "Commands"/"Testing" section if
+  none fits) — this repo already treats CLAUDE.md as the source of truth for agent-facing
+  conventions, so keep it consistent.
+- If there's no `CLAUDE.md` but a `README.md`/`CONTRIBUTING.md` has a Development/Testing/
+  Contributing section, offer to add it there instead.
+- If neither exists, ask whether they want a minimal `CLAUDE.md` created for this — prefer that
+  over README, since README usually targets human onboarding rather than agent conventions.
+
+Only write to the repo's docs after they say yes — this is a real content change to their
+project, not scratch state.
