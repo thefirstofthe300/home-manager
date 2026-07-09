@@ -67,6 +67,10 @@ comment. Not full logs, not full comment bodies.
   bot summaries as useful signal but verify the actual finding against the code before acting —
   don't fix phantom issues. Only resolve the thread afterward, once you've verified the fix
   addresses it (via the `resolveReviewThread` GraphQL mutation) — never resolve preemptively.
+- **Running fixes concurrently**: a CI failure and a review comment can easily point at the same
+  file. Before spawning fix subagents in parallel, check what each targets — only ones with no
+  file overlap may run concurrently; anything sharing a file runs sequentially, one committed
+  before the next starts. When unsure whether two fixes overlap, treat them as overlapping.
 - **CI still pending, nothing actionable yet**: don't wait synchronously. Skip to Step 5.
 - Commit fixes and push directly to the existing branch — this is a continuation of the push
   already approved when `flow-ship` opened the PR, not a new remote action, so it doesn't need a

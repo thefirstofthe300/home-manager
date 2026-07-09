@@ -59,8 +59,10 @@ the file but don't need to interrupt). Ask: fix now, fix later (leave as a follo
 on the ticket), or proceed as-is. Don't unilaterally decide this.
 
 - If fixing now: delegate each fix through the same pattern as `flow-implement` (one subagent
-  per fix, commit locally after), then re-run `flow-validate` if the fix touched code the
-  harness covers.
+  per fix, commit locally after). Before running any fixes concurrently, check their file lists
+  — only fix subagents whose files don't overlap with each other may run in parallel; anything
+  touching a shared file runs sequentially, one committed before the next starts. Then re-run
+  `flow-validate` if the fix touched code the harness covers.
 - Record what was decided for each finding in the `## Resolutions` section of `review.md`.
 
 ## Step 5 — Report back

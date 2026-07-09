@@ -1,6 +1,6 @@
 ---
 name: flow-implement
-description: Third phase of the flow pipeline — works through the plan's checklist one logical unit at a time via subagents, writing tests for new code by default, committing locally after each. Use standalone to resume implementation on a task that already has an approved plan, or as step 3 when invoked by the flow orchestrator.
+description: Third phase of the flow pipeline — works through the plan's checklist via subagents (parallelizing independent, non-file-overlapping items), writing tests for new code by default, committing locally after each. Use standalone to resume implementation on a task that already has an approved plan, or as step 3 when invoked by the flow orchestrator.
 ---
 
 # Flow: Implement
@@ -31,12 +31,33 @@ Before working the checklist, determine whether tests are in scope for this task
   re-ask ("Testing: on" or "Testing: off — user said <reason>").
 - A checklist item can still turn out to be untestable on its own merits (pure config, docs,
   generated code, a one-line constant change) — that's a per-item judgment call by the test
-  subagent in step 3.4 below, not a reason to skip the policy entirely.
+  subagent in step 4.4 below, not a reason to skip the policy entirely.
 
-## Step 3 — Work the checklist
+## Step 3 — Group items for safe parallel execution
 
-For each unchecked item, in order (respect obvious dependencies — e.g. don't implement a
-consumer before the thing it depends on):
+Checking `plan.md`'s file list per item, split the remaining checklist into batches:
+
+- Two items can run **in the same parallel batch** only if their file lists don't overlap at
+  all and neither depends on the other's output.
+- If two items touch even one file in common — or one depends on the other — they must run
+  **sequentially**, one fully committed before the next starts, regardless of whether there's
+  an obvious logical dependency between them. File overlap alone is reason enough to serialize:
+  two subagents editing the same file concurrently will clobber each other's changes or produce
+  a broken merge, even if the changes are conceptually independent.
+- When in doubt about whether two items' file sets overlap (e.g. a shared file only implied,
+  not stated explicitly in `plan.md`), treat them as overlapping and serialize them — a false
+  serialization costs a little time, a false parallelization costs correctness.
+- It's fine for a batch to contain only one item — most tasks won't have much real parallelism,
+  and that's expected.
+
+## Step 4 — Work the checklist
+
+Work batches in order (a later batch never starts until every item in the current batch has
+fully committed). Within a batch, each item's own coder → test-writer sequence (steps 1-6 below)
+runs independently of every other item's sequence — those can genuinely run concurrently, since
+Step 3 already guaranteed none of them share a file. A coder and its own test writer still run
+sequentially relative to each other (the test writer needs the coder's finished change), just
+concurrently with other items' pairs. For each item:
 
 1. Spawn a coder subagent scoped to just this item. Give it: the specific checklist line, the
    relevant file list/conventions from `plan.md`, and instruction to make the change following
@@ -81,14 +102,14 @@ consumer before the thing it depends on):
    summary, and the test outcome (e.g. "tested, ~85% coverage (pytest --cov)", "tested, estimated
    ~75% (no coverage tool)", or "untested — <reason>").
 
-## Step 4 — Handle failures
+## Step 5 — Handle failures
 
 If a subagent (coder or test writer) can't complete an item (genuinely blocked, not just needs
 another attempt), retry once with more context. If it's still blocked, mark it blocked in
 `progress.md` with why, and surface it to the user rather than skipping silently or guessing
 around it.
 
-## Step 5 — Report back
+## Step 6 — Report back
 
 Once all items are checked (or you've surfaced a blocker), return a short digest: how many
 items completed, commit count, test coverage summary (e.g. "tested" vs "untested" counts, and

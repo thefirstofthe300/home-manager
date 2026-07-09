@@ -67,8 +67,8 @@ Write `.claude/tasks/<slug>/plan.md`:
 
 ## Build sequence (checklist for flow-implement)
 
-- [ ] <logical unit 1 — small enough to be one commit>
-- [ ] <logical unit 2>
+- [ ] <logical unit 1 — small enough to be one commit> — files: `path/a`, `path/b`
+- [ ] <logical unit 2> — files: `path/c`
 - ...
 
 ## Risks / open questions
@@ -76,8 +76,11 @@ Write `.claude/tasks/<slug>/plan.md`:
 <anything flow-implement or flow-review should watch for>
 ```
 
-Keep the build sequence broken into commit-sized units — `flow-implement` works through this
-list one item at a time and commits after each.
+List every file each checklist item will touch, even ones shared with other items —
+`flow-implement` uses this to decide which items are safe to parallelize (no shared files) versus
+which must run sequentially. Keep the build sequence broken into commit-sized units — it works
+through this list (in parallel batches where safe, sequentially otherwise) and commits after
+each item.
 
 ## Step 6 — Checkpoint
 
