@@ -1,6 +1,6 @@
 ---
 name: flow-intake
-description: First phase of the flow pipeline — resolves a task from a Jira issue key/URL or a freeform prompt, creates the working branch, and writes the task digest to .claude/tasks/<slug>/task.md. Use standalone when the user wants to just "start" or "kick off" a ticket/task without running the rest of the pipeline yet, or as step 1 when invoked by the flow orchestrator.
+description: First phase of the flow pipeline — resolves a task from a Jira issue key/URL, a freeform prompt, or a newly-created Jira ticket (added to the current sprint and assigned to the current user by default), creates the working branch, and writes the task digest to .claude/tasks/<slug>/task.md. Use standalone when the user wants to just "start" or "kick off" a ticket/task without running the rest of the pipeline yet, or as step 1 when invoked by the flow orchestrator.
 ---
 
 # Flow: Intake
@@ -18,8 +18,8 @@ just the jira-mcp tools and a few git/file operations.
   needs one before asking:
   - Look at the repo's CLAUDE.md/README and any project memory for an explicit statement that
     Jira tickets aren't required (e.g. a personal-project convention).
-  - If nothing says tickets are optional, follow the default: ask the user for a ticket, or
-    confirm explicitly that this is a no-ticket task.
+  - If nothing says tickets are optional, ask the user: provide an existing ticket key, have
+    one created now (see Step 2a), or confirm explicitly that this is a no-ticket task.
   - If the repo convention says tickets aren't needed, proceed without one.
 
 ## Step 2 — Fetch the ticket (if there is one)
@@ -34,6 +34,27 @@ avatars, custom workflow metadata, etc.) — this file should stay short.
 
 If jira-mcp isn't connected or the call fails, tell the user and ask whether to proceed without
 ticket details (freeform) or wait/retry.
+
+## Step 2a — Create a new ticket (if the user asked for one)
+
+When the user wants a new Jira ticket created for this task rather than using an existing one:
+
+1. Determine the project/board it belongs to (ask if it's not obvious from context).
+2. Create the issue via `jira_create_issue` (or the `acli` skill), using the task description
+   as the summary/description.
+3. Unless the user says otherwise, apply these defaults:
+   - **Assignee**: the currently authenticated user — don't leave it unassigned.
+   - **Sprint**: the current active sprint for that board, not the backlog. Look it up with
+     `jira_get_active_sprint` (or `acli jira board list-sprints` / `acli jira sprint view`), then
+     set it via `jira_set_issue_sprint` (or `acli jira workitem edit`) if creation doesn't accept
+     sprint directly.
+   - If there's no active sprint (sprints aren't in use on this board, or nothing is currently
+     active), say so and ask rather than silently leaving it in the backlog or guessing.
+4. Treat the newly created ticket as the source for the rest of this skill — continue at Step 2
+   to fetch and record it in `task.md` like any other ticket.
+
+These are defaults, not hard rules — an explicit assignee, sprint, or "leave it unassigned"/
+"put it in the backlog" from the user overrides them.
 
 ## Step 3 — Determine the slug
 
