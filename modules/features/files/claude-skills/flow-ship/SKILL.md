@@ -60,7 +60,8 @@ Write `.claude/tasks/<slug>/pr.md` with the final title/body and the resulting P
 
 ## Step 6 — Wrap up
 
-Report the PR URL to the user. Mention (don't invoke) that the `babysit` skill can monitor the
-PR through review and CI if they want that next. Don't touch the Jira ticket's status or add a
-PR link to it automatically — if that seems useful, ask first, since it's a shared-state
+Report the PR URL to the user. If running as part of the `flow` pipeline, continue to
+`flow-babysit` next. If invoked standalone, mention (don't invoke) that `flow-babysit` can watch
+the PR through review and CI if they want that next. Don't touch the Jira ticket's status or add
+a PR link to it automatically — if that seems useful, ask first, since it's a shared-state
 mutation in another system.

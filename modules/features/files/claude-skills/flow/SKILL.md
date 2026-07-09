@@ -7,8 +7,8 @@ description: Orchestrates a task from a Jira issue or freeform prompt all the wa
 
 You are the orchestrator. Your job is sequencing and context discipline, not doing the work
 yourself. Every phase below is its own skill (`flow-intake`, `flow-plan`, `flow-implement`,
-`flow-validate`, `flow-review`, `flow-ship`) and can also be invoked standalone. When running
-the full pipeline, invoke them in order via the Skill tool.
+`flow-validate`, `flow-review`, `flow-ship`, `flow-babysit`) and can also be invoked standalone.
+When running the full pipeline, invoke them in order via the Skill tool.
 
 This works across any repository type (Terraform, Python, Java, Go, Rust, infra config, etc.).
 Nothing here is language-specific — every phase discovers conventions from the target repo
@@ -18,8 +18,8 @@ rather than assuming any.
 
 - State for the current task lives at `.claude/tasks/<slug>/` inside the repo being worked on.
   Each phase skill writes one short markdown file there (`task.md`, `plan.md`, `progress.md`,
-  `validation.md`, `review.md`, `pr.md`). These files are already condensed — you may read them
-  directly.
+  `validation.md`, `review.md`, `pr.md`, `babysit.md`). These files are already condensed — you
+  may read them directly.
 - You must **never** pull raw subagent transcripts, full diffs, full test/build logs, or full
   file contents into your own context. That work happens inside subagents (via the `Agent`
   tool) or scripted checks; only a short digest (pass/fail, file list, one-line summary) comes
@@ -68,11 +68,12 @@ phase's digest file when it returns, relay a short status update to the user, th
 6. **`flow-ship`** — drafts the PR title/body and shows the commit list.
    **Hard checkpoint, no exceptions**: always ask for explicit go-ahead before this skill
    pushes the branch or opens the PR, regardless of how autonomous the rest of the run was.
-
-## After the PR is open
-
-`flow-ship` stops once the PR exists. Mention to the user that the `babysit` skill can monitor
-the PR through review/CI if they want that next — don't invoke it automatically.
+7. **`flow-babysit`** — watches the opened PR until CI passes and all review comments/threads
+   are resolved, fixing real issues and pushing follow-up commits along the way (these pushes
+   don't need a fresh checkpoint each time — the branch is already approved for remote pushes
+   as of step 6). Does one check-and-act pass per invocation; if nothing actionable is ready
+   yet, it schedules a wakeup to check again rather than blocking. This is the last phase — the
+   pipeline is done once it reports the PR mergeable.
 
 ## Errors and blockers
 
