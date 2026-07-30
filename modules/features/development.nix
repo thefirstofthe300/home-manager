@@ -118,7 +118,7 @@ in
           code-review = ./files/claude-commands/code-review.md;
         };
         settings = {
-          model = "claude-sonnet-4-6";
+          model = "claude-sonnet-5";
           tui = "default";
           skipAutoPermissionPrompt = true;
           permissions = {

@@ -36,6 +36,10 @@
     serena = {
       url = "github:oraios/serena";
     };
+    claude-desktop-debian = {
+      url = "github:aaddrick/claude-desktop-debian";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -47,6 +51,7 @@
       sops-nix,
       flox,
       serena,
+      claude-desktop-debian,
       ...
     }:
     let
@@ -57,6 +62,7 @@
           (_: _: {
             flox = flox.packages.${system}.default;
             serena = serena.packages.${system}.serena;
+            claude-desktop = claude-desktop-debian.packages.${system}.claude-desktop;
           })
         ];
       };

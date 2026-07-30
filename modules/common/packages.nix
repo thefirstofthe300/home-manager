@@ -13,6 +13,7 @@
       direnv
       nil
       nixfmt
+      claude-desktop
     ];
     enableNixpkgsReleaseCheck = false;
   };
