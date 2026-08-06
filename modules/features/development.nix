@@ -8,10 +8,10 @@ let
   cfg = config.features.development;
   mcpDefaults = {
     kubernetes = true;
-    nextcloud = true;
+    nextcloud = false;
     todoist = true;
     circleci = false;
-    serena = true;
+    serena = false;
     observe = false;
     jira = false;
   };
