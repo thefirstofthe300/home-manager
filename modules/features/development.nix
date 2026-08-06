@@ -33,6 +33,33 @@ let
       pkgs.uv
     ];
   };
+  beads = pkgs.beads.overrideAttrs (old: rec {
+    version = "1.1.2";
+    src = pkgs.fetchFromGitHub {
+      owner = "gastownhall";
+      repo = "beads";
+      tag = "v${version}";
+      hash = "sha256-5oDI2MunHrOKx1m5mC0ZaIqZ9+f1YBQotMBUj6U5H1I=";
+    };
+    vendorHash = "sha256-WWEwGpCwMPD7jaz02zN745RQQqYTQttehbcT3J9hayM=";
+    # `go test -skip` only honors the last flag occurrence, so the added
+    # test below must be folded into a single regex rather than appended as
+    # a second -skip flag onto old.checkFlags.
+    checkFlags =
+      let
+        skippedTests = [
+          "TestCheckMetadataVersionTracking"
+          # New in 1.1.2: exercises `git worktree add` triggering a
+          # post-checkout hook, which can't exec in the Nix build sandbox.
+          # Unrelated to this version bump.
+          "TestInstallHooksBeads_WorktreeAccess"
+        ]
+        ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
+          "TestCleanupMergeArtifacts_CommandInjectionPrevention"
+        ];
+      in
+      [ "-skip=^(${lib.concatStringsSep "|" skippedTests})$" ];
+  });
   circleci-cli = pkgs.circleci-cli.overrideAttrs (old: rec {
     version = "1.0.42707-pre";
     src = pkgs.fetchFromGitHub {
@@ -265,6 +292,7 @@ in
     };
 
     home.packages = with pkgs; [
+      beads
       flox
       cobra-cli
       bun
