@@ -14,6 +14,7 @@ let
     serena = false;
     observe = false;
     jira = false;
+    github = true;
   };
   # `//` right-biases onto mcpDefaults so hosts only need to override the keys
   # they care about; attrsOf's own `default` does not merge with definitions.
@@ -115,8 +116,9 @@ in
       default = { };
       description = ''
         Which MCP servers to enable, keyed by server name, overriding the defaults
-        (kubernetes, nextcloud, todoist, circleci, serena = true; observe, jira = false). jira
-        additionally requires gremlinSkillsPath to be set.
+        (kubernetes, todoist, github = true; nextcloud, circleci, serena, observe,
+        jira = false). jira additionally requires gremlinSkillsPath to be set. github
+        uses GitHub's hosted MCP endpoint and authenticates over OAuth on first use.
       '';
     };
   };
@@ -287,6 +289,11 @@ in
               JIRA_BASE_URL = "https://gremlininc.atlassian.net";
               JIRA_EMAIL = cfg.jiraEmail;
             };
+          };
+        }
+        // lib.optionalAttrs mcp.github {
+          github = {
+            "url" = "https://api.githubcopilot.com/mcp/";
           };
         };
     };
