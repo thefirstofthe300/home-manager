@@ -133,8 +133,8 @@ in
       enable = true;
       nvidia = {
         enable = true;
-        version = "595.71.05";
-        sha256 = "sha256-NiA7iWC35JyKQva6H1hjzeNKBek9KyS3mK8G3YRva4I=";
+        version = "595.91.07";
+        sha256 = "sha256-yiPIjdJLB6GRZE4eEc+3vN11NzBXSa9A+YABiwleYxM=";
       };
     };
   };
@@ -142,7 +142,7 @@ in
   features.development = {
     gremlinSkillsPath = "/home/dseymour/workspace/github.com/gremlin/gremlin-ai-skills";
     jiraEmail = "danny.seymour@gremlin.com";
-    workSkills = [ "investigate-alert" ];
+    workSkills = [ "investigate-alert" "eng-private-edition" ];
     mcp = {
       observe = true;
       jira = true;
@@ -151,10 +151,6 @@ in
   };
 
   programs.mcp.servers = {
-    datadog = {
-      url = "https://mcp.datadoghq.com/api/unstable/mcp-server/mcp?toolsets=core,alerting,dashboards";
-    };
-
     gremlin = {
       command = lib.getExe (
         pkgs.writeShellApplication {
@@ -177,6 +173,10 @@ in
       clang
       llvmPackages.libclang.lib
       devfiler
+      pi-coding-agent
+      python314Packages.huggingface-hub
+      packer
+      trivy
     ];
 
     sessionVariables = {
