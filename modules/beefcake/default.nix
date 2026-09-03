@@ -172,7 +172,7 @@ in
       cmake
       clang
       llvmPackages.libclang.lib
-      devfiler
+      # devfiler
       pi-coding-agent
       python314Packages.huggingface-hub
       packer
