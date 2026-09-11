@@ -76,6 +76,71 @@ let
     export LD_LIBRARY_PATH=${pkgs.libglvnd}/lib:/run/opengl-driver/lib''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
     exec ${devfilerBase}/bin/devfiler "$@"
   '';
+
+  # Robrix isn't packaged in nixpkgs, and building it from source hits a nixpkgs
+  # Cargo-vendoring bug (a nested pre-vendored `libs/rapier/vendor/*` directory inside
+  # the makepad-widgets git dependency has committed `.cargo-checksum.json` files that
+  # the vendoring tool can't overwrite). So this wraps upstream's official prebuilt
+  # x86_64 AppImage release instead, via appimageTools.
+  robrixVersion = "1.0.0-alpha.2";
+  robrixSrc = pkgs.fetchurl {
+    url = "https://github.com/project-robius/robrix/releases/download/v${robrixVersion}/robrix-${robrixVersion}-x86_64.AppImage";
+    hash = "sha256-nYcCJtDcUfp71IFs86vZ9HiXt/29ycyMopyHsYWu8dA=";
+  };
+  robrixAppimageContents = pkgs.appimageTools.extract {
+    pname = "robrix";
+    version = robrixVersion;
+    src = robrixSrc;
+  };
+  robrixUnwrapped = pkgs.appimageTools.wrapType2 {
+    pname = "robrix";
+    version = robrixVersion;
+    src = robrixSrc;
+
+    extraPkgs = pkgs: with pkgs; [
+      openssl
+      sqlite
+      alsa-lib
+      libpulseaudio
+      dbus
+      wayland
+      libxkbcommon
+      libx11
+      libxcursor
+      libglvnd
+      fontconfig
+      mesa
+    ];
+
+    extraInstallCommands = ''
+      install -Dm444 ${robrixAppimageContents}/usr/share/applications/robrix.desktop -t $out/share/applications
+      cp -r ${robrixAppimageContents}/usr/share/icons $out/share/
+    '';
+
+    # The AppImage bundles its own (older) libwayland-client.so.0, which is ABI-incompatible
+    # with the Nix-provided mesa EGL Wayland platform code: eglGetPlatformDisplayEXT() returns
+    # EGL_NO_DISPLAY when the bundled copy is loaded. Shadow it with the Nix-provided one.
+    extraBwrapArgs = [
+      "--ro-bind ${pkgs.wayland}/lib/libwayland-client.so.0 ${robrixAppimageContents}/usr/lib/libwayland-client.so.0"
+    ];
+  };
+  robrix = pkgs.runCommand "robrix-${robrixVersion}"
+    {
+      nativeBuildInputs = [ pkgs.makeWrapper ];
+      meta = with lib; {
+        description = "A powerful multi-platform Matrix chat client written from scratch in Rust";
+        homepage = "https://github.com/project-robius/robrix";
+        license = licenses.mit;
+        platforms = [ "x86_64-linux" ];
+        mainProgram = "robrix";
+      };
+    }
+    ''
+      mkdir -p $out/bin $out/share
+      cp -r ${robrixUnwrapped}/share/. $out/share/
+      makeWrapper ${robrixUnwrapped}/bin/robrix $out/bin/robrix \
+        --set __EGL_VENDOR_LIBRARY_FILENAMES "/run/opengl-driver/share/glvnd/egl_vendor.d/10_nvidia.json:${pkgs.mesa}/share/glvnd/egl_vendor.d/50_mesa.json"
+    '';
 in
 {
   imports = [ ../profiles/work.nix ];
@@ -173,6 +238,7 @@ in
       clang
       llvmPackages.libclang.lib
       # devfiler
+      robrix
       pi-coding-agent
       python314Packages.huggingface-hub
       packer

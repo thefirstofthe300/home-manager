@@ -62,20 +62,18 @@ let
       [ "-skip=^(${lib.concatStringsSep "|" skippedTests})$" ];
   });
   circleci-cli = pkgs.circleci-cli.overrideAttrs (old: rec {
-    version = "1.0.42707-pre";
+    version = "1.0.49408";
     src = pkgs.fetchFromGitHub {
       owner = "CircleCI-Public";
       repo = "circleci-cli";
       rev = "v${version}";
-      hash = "sha256-ltmRA8XlWFd8A2CD7bynpfyA3eab1sCRtRP8pPEvezw=";
+      hash = "sha256-8vOMD7OCg5zEbqeOEEaBg4qT2vIWi/A961Ec1I9tzTg=";
     };
-    vendorHash = "sha256-6FxItn+I2AyEQr7LMyUBcaDDOo/JE7g5tEF0o0VwE9Q=";
+    vendorHash = "sha256-YvlDEgWmqUrLH9B5yV+1dImH1h3O7Ub3tgXSALiJLKI=";
     ldflags = [
       "-s"
       "-w"
-      "-X github.com/CircleCI-Public/circleci-cli/version.Version=${version}"
-      "-X github.com/CircleCI-Public/circleci-cli/version.Commit=v${version}"
-      "-X github.com/CircleCI-Public/circleci-cli/version.packageManager=nix"
+      "-X main.version=${version}"
       "-buildid="
     ];
     # v1.0.x builds the binary as 'circleci' directly; v0.1.x built 'circleci-cli' and renamed it
@@ -132,6 +130,11 @@ in
       }
       // lib.optionalAttrs (mcp.jira && cfg.gremlinSkillsPath != "") {
         jira-api-token = {
+          sopsFile = ../../secrets/common.yaml;
+        };
+      }
+      // lib.optionalAttrs mcp.github {
+        github-mcp-token = {
           sopsFile = ../../secrets/common.yaml;
         };
       };
@@ -293,7 +296,19 @@ in
         }
         // lib.optionalAttrs mcp.github {
           github = {
-            "url" = "https://api.githubcopilot.com/mcp/";
+            command = lib.getExe (
+              pkgs.writeShellApplication {
+                name = "github-mcp";
+                runtimeInputs = [ pkgs.nodejs ];
+                text = ''
+                  headerFile=$(mktemp)
+                  trap 'rm -f "$headerFile"' EXIT
+                  printf 'Authorization: Bearer %s\n' "$(cat ${lib.escapeShellArg config.sops.secrets.github-mcp-token.path})" > "$headerFile"
+                  chmod 600 "$headerFile"
+                  npx mcp-remote@latest "https://api.githubcopilot.com/mcp/" --header-file "$headerFile"
+                '';
+              }
+            );
           };
         };
     };
