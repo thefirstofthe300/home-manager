@@ -80,67 +80,57 @@ let
   # Robrix isn't packaged in nixpkgs, and building it from source hits a nixpkgs
   # Cargo-vendoring bug (a nested pre-vendored `libs/rapier/vendor/*` directory inside
   # the makepad-widgets git dependency has committed `.cargo-checksum.json` files that
-  # the vendoring tool can't overwrite). So this wraps upstream's official prebuilt
-  # x86_64 AppImage release instead, via appimageTools.
-  robrixVersion = "1.0.0-alpha.2";
-  robrixSrc = pkgs.fetchurl {
-    url = "https://github.com/project-robius/robrix/releases/download/v${robrixVersion}/robrix-${robrixVersion}-x86_64.AppImage";
-    hash = "sha256-nYcCJtDcUfp71IFs86vZ9HiXt/29ycyMopyHsYWu8dA=";
-  };
-  robrixAppimageContents = pkgs.appimageTools.extract {
+  # the vendoring tool can't overwrite). So this repackages upstream's official prebuilt
+  # x86_64 Linux tarball (already laid out as a /usr tree) via autoPatchelfHook.
+  robrix = pkgs.stdenv.mkDerivation (finalAttrs: {
     pname = "robrix";
-    version = robrixVersion;
-    src = robrixSrc;
-  };
-  robrixUnwrapped = pkgs.appimageTools.wrapType2 {
-    pname = "robrix";
-    version = robrixVersion;
-    src = robrixSrc;
+    version = "1.0.0-beta.1";
 
-    extraPkgs = pkgs: with pkgs; [
+    src = pkgs.fetchurl {
+      url = "https://github.com/project-robius/robrix/releases/download/v${finalAttrs.version}/robrix_${finalAttrs.version}_x86_64.tar.gz";
+      hash = "sha256-+Hc2mDYUjC79nKdXC82/JxIUddprscLi7x5H8VDeRYE=";
+    };
+
+    nativeBuildInputs = with pkgs; [
+      autoPatchelfHook
+      makeWrapper
+    ];
+
+    buildInputs = with pkgs; [
+      stdenv.cc.cc.lib
       openssl
-      sqlite
       alsa-lib
       libpulseaudio
-      dbus
       wayland
       libxkbcommon
       libx11
       libxcursor
-      libglvnd
-      fontconfig
-      mesa
     ];
 
-    extraInstallCommands = ''
-      install -Dm444 ${robrixAppimageContents}/usr/share/applications/robrix.desktop -t $out/share/applications
-      cp -r ${robrixAppimageContents}/usr/share/icons $out/share/
+    dontBuild = true;
+    dontConfigure = true;
+
+    installPhase = ''
+      runHook preInstall
+      mkdir -p $out
+      cp -r . $out/
+      runHook postInstall
     '';
 
-    # The AppImage bundles its own (older) libwayland-client.so.0, which is ABI-incompatible
-    # with the Nix-provided mesa EGL Wayland platform code: eglGetPlatformDisplayEXT() returns
-    # EGL_NO_DISPLAY when the bundled copy is loaded. Shadow it with the Nix-provided one.
-    extraBwrapArgs = [
-      "--ro-bind ${pkgs.wayland}/lib/libwayland-client.so.0 ${robrixAppimageContents}/usr/lib/libwayland-client.so.0"
-    ];
-  };
-  robrix = pkgs.runCommand "robrix-${robrixVersion}"
-    {
-      nativeBuildInputs = [ pkgs.makeWrapper ];
-      meta = with lib; {
-        description = "A powerful multi-platform Matrix chat client written from scratch in Rust";
-        homepage = "https://github.com/project-robius/robrix";
-        license = licenses.mit;
-        platforms = [ "x86_64-linux" ];
-        mainProgram = "robrix";
-      };
-    }
-    ''
-      mkdir -p $out/bin $out/share
-      cp -r ${robrixUnwrapped}/share/. $out/share/
-      makeWrapper ${robrixUnwrapped}/bin/robrix $out/bin/robrix \
+    postFixup = ''
+      wrapProgram $out/bin/robrix \
+        --prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath [ pkgs.libglvnd pkgs.mesa ]} \
         --set __EGL_VENDOR_LIBRARY_FILENAMES "/run/opengl-driver/share/glvnd/egl_vendor.d/10_nvidia.json:${pkgs.mesa}/share/glvnd/egl_vendor.d/50_mesa.json"
     '';
+
+    meta = with lib; {
+      description = "A powerful multi-platform Matrix chat client written from scratch in Rust";
+      homepage = "https://github.com/project-robius/robrix";
+      license = licenses.mit;
+      platforms = [ "x86_64-linux" ];
+      mainProgram = "robrix";
+    };
+  });
 in
 {
   imports = [ ../profiles/work.nix ];
@@ -207,13 +197,17 @@ in
   features.development = {
     gremlinSkillsPath = "/home/dseymour/workspace/github.com/gremlin/gremlin-ai-skills";
     jiraEmail = "danny.seymour@gremlin.com";
-    workSkills = [ "investigate-alert" "eng-private-edition" ];
+    workSkills = [ "investigate-alert" "eng-private-edition" "eng-platform" "jig" ];
     mcp = {
       observe = true;
       jira = true;
       circleci = true;
     };
   };
+
+  # Experimental: lets Claude Code spawn and coordinate multiple agent
+  # teammates within a session. Disabled by default upstream.
+  programs.claude-code.settings.env.CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS = "1";
 
   programs.mcp.servers = {
     gremlin = {
