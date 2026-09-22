@@ -1,0 +1,65 @@
+{
+  "skill_name": "doc-editing",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Here's the intro to our new onboarding guide, can you tighten it up?\n\n\"Sprocket is a deployment orchestration layer — it sits between your CI pipeline and your clusters. The reason we built Sprocket was that our previous approach, which involved a set of bash scripts maintained by the platform team, had grown to roughly 4,000 lines and nobody understood it end to end anymore. Sprocket is written in Go. It uses a declarative manifest format. The manifest format is YAML. You describe what you want and Sprocket makes it happen.\"",
+      "expected_output": "Removes the em dash. Cuts the origin story about bash scripts and line counts, since it is history that does not help someone use the tool. Recognises the last four sentences as choppy and combines them with subordination rather than leaving them as consecutive simple declaratives. Keeps Sprocket capitalized. Must NOT simply shorten every sentence, and must not preserve the historical background on the grounds that it is interesting.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Our docs refer to the approval steps as Checkpoint A, Checkpoint B, and Checkpoint C. A is where the team lead approves the rollout plan, B is where security signs off on the threat model, and C is where the release manager authorises the deploy. Can you review how we've named these?",
+      "expected_output": "Recommends renaming each checkpoint for the artifact or decision it involves, such as rollout plan approval, threat model sign-off, and deploy authorisation. Gives the reason: a letter or number carries no information and is the first thing a reader forgets, whereas the artifact name tells the person being asked what they are looking at. Should note the names need to be applied everywhere the terms appear, not just in the docs. Must NOT defend the lettering as fine once it is explained.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Can you write up a guide for our internal deploy tool? Cover what it is, installing it, the daily workflow, the config file format, the CLI reference, and troubleshooting.",
+      "expected_output": "Proposes several separate documents rather than one long guide, and says why: a reader arrives looking for one thing and pages let them find it and stop. Suggests an order where terms are introduced before they are used. Should ask about or account for where the docs will live. Must NOT produce a single monolithic document covering all six topics.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "Review this troubleshooting entry:\n\n\"### Deploy is stuck in PENDING\n\nCheck the scheduler logs for admission errors. If the node pool is at capacity, scale it up. If the manifest references a missing secret, create the secret and re-run. If the deploy has been pending more than an hour, cancel it and open an incident.\"",
+      "expected_output": "Points out the entry never says which of these the reader does themselves and which they can hand off, and adds that distinction. Scaling a node pool and creating a secret are operations that can be delegated; cancelling a deploy and opening an incident are decisions the reader owns. Should note readers cannot infer this and getting it wrong wastes time in both directions. May also note the entry gives four causes with no way to tell which applies.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "Here's the flowchart for our release process. One branch goes: build → test → \"tests failed\" → red box labelled BLOCKED. Does this look right?",
+      "expected_output": "Identifies the BLOCKED box as a dead end and treats it as a defect rather than a stylistic preference. Says the branch must show the way out and where it returns to in the flow, for example fixing the code and returning to the build step. Should note that a diagram which shows a failure and stops sends the reader back to guessing, which is the state the diagram was meant to end. Must NOT approve the branch as adequate because BLOCKED is self-explanatory.",
+      "files": []
+    },
+    {
+      "id": 6,
+      "prompt": "Can you rewrite the architecture page in our wiki to be clearer? Here's the URL.",
+      "expected_output": "Fetches the current content before editing rather than working from memory or from an earlier version. Prefers targeted edits over replacing the whole page, and if a wholesale rewrite is necessary, says so explicitly so the user knows to check for edits of their own that may have been discarded. Should also check for and address any comments on the page. Must NOT overwrite the page wholesale without first reading what is currently there.",
+      "files": []
+    },
+    {
+      "id": 7,
+      "prompt": "I left a couple of comments on the API guide. Can you deal with them?",
+      "expected_output": "Reads the comments, makes the changes they call for, and replies on each thread saying what changed and why. Does NOT resolve the threads, leaving that to the person who raised them. If a comment asks for something the responder disagrees with, it says so on the thread rather than silently doing something else. Must not treat making the edit as sufficient without replying.",
+      "files": []
+    },
+    {
+      "id": 8,
+      "prompt": "The docs for our config system are finished. Can you check they'd actually make sense to someone new?",
+      "expected_output": "Spawns a subagent briefed as someone competent in the domain but with no prior knowledge of this system and no access to its source, and has it read the pages in order. Asks for undefined jargon, assumed knowledge, unanswered questions, ordering problems, and specifically anything the reviewer actively misread. Should say that the misreadings are the most valuable category, because they are invisible to anyone who already knows what the text means. Must NOT simply re-read the docs itself and pronounce them clear.",
+      "files": []
+    },
+    {
+      "id": 9,
+      "prompt": "Our docs always say \"job definition\" but the CLI flag is --spec and the file on disk is spec.yaml. Should we change the docs to say spec everywhere?",
+      "expected_output": "Does not treat this as a binary choice between the two words. Recommends keeping the clearer term in prose while defining the internal one once, saying where the reader will encounter it: in the flag, the filename, and any error messages. Naming the term, saying where it turns up, and then continuing to use the clearer word is better than pretending the reader will never meet it. Must NOT recommend renaming everything to spec purely for consistency, and must not leave the mismatch undocumented.",
+      "files": []
+    },
+    {
+      "id": 10,
+      "prompt": "Here's a sentence from our runbook: \"If the primary fails over, page Marcus — he owns the replication config.\" Anything wrong with it?",
+      "expected_output": "Flags the use of a real person's name, and gives the reason: it reads as a requirement to involve that specific person, and it goes stale when they change roles or leave. Recommends a role or a rota instead, such as the on-call database engineer. May also note the em dash. Must NOT treat naming a colleague as acceptable because it is accurate today.",
+      "files": []
+    }
+  ]
+}
