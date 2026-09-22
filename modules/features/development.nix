@@ -169,7 +169,7 @@ in
             ];
           };
           enabledPlugins = {
-            "claude-mem@thedotmack" = true;
+            "claude-mem-lite@sdsrss" = true;
             "claude-code-setup@claude-plugins-official" = true;
             "slack@claude-plugins-official" = true;
             "code-review@claude-plugins-official" = true;
@@ -198,10 +198,10 @@ in
                 "repo" = "fluxcd/agent-skills";
               };
             };
-            "thedotmack" = {
+            "sdsrss" = {
               "source" = {
                 "source" = "github";
-                "repo" = "thedotmack/claude-mem";
+                "repo" = "sdsrss/claude-mem-lite";
               };
             };
           }

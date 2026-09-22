@@ -9,21 +9,21 @@ Automates the end-of-day workflow: review today's work → draft Jira updates �
 
 ## Step 1 — Gather today's work
 
-Query the claude-mem MCP server for all observations recorded today **across every project**, not just the current one.
+Query the claude-mem-lite MCP server for all observations recorded today **across every project**, not just the current one.
 
 Do not rely solely on the system-reminder timeline summary — always fetch fresh data from the MCP server.
 
 ### Primary path — direct search (always run this)
 
-Call `mcp__plugin_claude-mem_mcp-search__search` with `dateStart` set to today's date (from the `currentDate` system context) and a broad query covering common work themes (e.g., "deployed committed PR fix feature"). Set `limit` to 25 and `orderBy` to `date_asc`. If 25 results come back, paginate with `offset: 25` to catch the full day.
+Call `mcp__plugin_claude-mem-lite_mem-lite__mem_search` with a broad query covering common work themes (e.g., "deployed committed PR fix feature") and a date-range filter for today (from the `currentDate` system context). Set `limit` to 25. If 25 results come back, paginate to catch the full day.
 
-### Optional enhancement — corpora (run in parallel with the search above)
+### Optional enhancement — timeline (run in parallel with the search above)
 
-Call `mcp__plugin_claude-mem_mcp-search__list_corpora`. If it returns any corpora, call `mcp__plugin_claude-mem_mcp-search__timeline` for each one in parallel, filtering to today. Merge any additional observations into the results from the primary path. If `list_corpora` returns an empty array, skip this step — corpora are an optional named-index layer on top of the raw observation store; their absence does not mean observations are missing.
+Call `mcp__plugin_claude-mem-lite_mem-lite__mem_timeline` anchored on today to catch anything the keyword search missed. Merge any additional observations into the results from the primary path.
 
 ### Enrichment
 
-Once you have the combined list, load full details for observations that look relevant but are sparse using `mcp__plugin_claude-mem_mcp-search__get_observations` with the relevant IDs.
+Once you have the combined list, load full details for observations that look relevant but are sparse using `mcp__plugin_claude-mem-lite_mem-lite__mem_get` with the relevant IDs.
 
 Summarize what was actually completed today in plain terms — no implementation details, just outcomes (e.g., "Prometheus deployed to gremlin-ai, PR #1071 ready for review").
 
