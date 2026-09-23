@@ -226,6 +226,13 @@ in
   # teammates within a session. Disabled by default upstream.
   programs.claude-code.settings.env.CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS = "1";
 
+  # Disable claude-mem-lite's automatic CLAUDE.md steering-block insertion
+  # on SessionStart. This is a user preference, not a project one -- it
+  # should never write into a project's checked-in CLAUDE.md without being
+  # asked. Per-project opt-out (a `.mem-no-auto-adopt` sentinel file) also
+  # exists, but this is the global escape hatch.
+  programs.claude-code.settings.env.MEM_NO_AUTO_ADOPT = "1";
+
   programs.mcp.servers = {
     gremlin = {
       command = lib.getExe (
