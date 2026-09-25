@@ -4,3 +4,4 @@
 @rules/claude-mem-lite.md
 @rules/serena.md
 @rules/communication.md
+@rules/github.md
