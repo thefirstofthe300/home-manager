@@ -1,17 +1,6 @@
 {
   description = "Home Manager configuration for Daniel Seymour";
 
-  nixConfig = {
-    extra-substituters = [ 
-"https://cache.nixos-cuda.org" 
-"https://cache.flox.dev"
-];
-    extra-trusted-public-keys = [
-      "cache.nixos-cuda.org:74DUi4Ye579gUqzH4ziL9IyiJBlDpMRn9MBN8oNan9M="
-      "flox-cache-public-1:7F4OyH7ZCnFhcze3fJdfyXYLQw/aV7GEed86nQ7IsOs="
-    ];
-  };
-
   inputs = {
     # Specify the source of Home Manager and Nixpkgs.
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";

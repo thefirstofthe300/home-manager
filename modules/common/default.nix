@@ -12,4 +12,7 @@
     ./user.nix
     ../features
   ];
+
+  manual.json.enable = false;
+  manual.html.enable = false;
 }
