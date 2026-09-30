@@ -19,9 +19,6 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    flox = {
-      url = "github:flox/flox/latest";
-    };
     serena = {
       url = "github:oraios/serena";
     };
@@ -38,7 +35,6 @@
       nixgl,
       nix-flatpak,
       sops-nix,
-      flox,
       serena,
       claude-desktop-debian,
       ...
@@ -49,7 +45,6 @@
         inherit system;
         overlays = [
           (final: prev: {
-            flox = flox.packages.${system}.default;
             serena = serena.packages.${system}.serena;
             claude-desktop = claude-desktop-debian.packages.${system}.claude-desktop;
             # nixpkgs-unstable lags the upstream claude-code release by a few

@@ -291,7 +291,6 @@ in
 
     home.packages = with pkgs; [
       beads
-      flox
       cobra-cli
       bun
       uvWithChromaFix
