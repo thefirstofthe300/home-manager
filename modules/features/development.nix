@@ -178,6 +178,7 @@ in
             "document-skills@anthropic-agent-skills" = true;
             "gitops-skills@fluxcd" = true;
             "warp@claude-code-warp" = true;
+            "mcp-apps@mcp-apps" = true;
           }
           // lib.optionalAttrs mcp.github {
             "github@claude-plugins-official" = true;
@@ -202,6 +203,12 @@ in
               "source" = {
                 "source" = "github";
                 "repo" = "sdsrss/claude-mem-lite";
+              };
+            };
+            "mcp-apps" = {
+              "source" = {
+                "source" = "github";
+                "repo" = "modelcontextprotocol/ext-apps";
               };
             };
           }
