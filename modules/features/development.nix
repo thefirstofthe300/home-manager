@@ -67,6 +67,13 @@ in
       description = "Absolute path to a local gremlin-ai-skills checkout. Enables the gremlin-ai-skills marketplace when non-empty, and (together with mcp.jira) the jira-mcp server.";
     };
 
+    gremlinSkillsMarketplacePath = lib.mkOption {
+      type = lib.types.str;
+      default = cfg.gremlinSkillsPath;
+      defaultText = lib.literalExpression "config.features.development.gremlinSkillsPath";
+      description = "Directory the gremlin-ai-skills marketplace is loaded from. Defaults to gremlinSkillsPath; point it at a worktree to try unmerged plugin changes without moving the jira-mcp server.";
+    };
+
     jiraEmail = lib.mkOption {
       type = lib.types.str;
       default = "";
@@ -185,7 +192,7 @@ in
             "gremlin-ai-skills" = {
               "source" = {
                 "source" = "directory";
-                "path" = cfg.gremlinSkillsPath;
+                "path" = cfg.gremlinSkillsMarketplacePath;
               };
             };
           };
@@ -242,13 +249,6 @@ in
             ];
           };
         }
-        // lib.optionalAttrs mcp.observe {
-          observe = {
-            command = lib.getExe (
-              pkgs.writeShellApplication {
-                name = "observe-mcp";
-                runtimeInputs = [ pkgs.nodejs ];
-                text = ''
         // lib.optionalAttrs mcp.github {
           github = {
             command = lib.getExe (
@@ -263,6 +263,13 @@ in
             );
           };
         }
+        // lib.optionalAttrs mcp.observe {
+          observe = {
+            command = lib.getExe (
+              pkgs.writeShellApplication {
+                name = "observe-mcp";
+                runtimeInputs = [ pkgs.nodejs ];
+                text = ''
                   AUTH_HEADER=$(cat ${lib.escapeShellArg config.sops.secrets.observe-auth-header.path})
                   exec npx mcp-remote@latest "https://136981668482.observeinc.com/v1/ai/mcp" --header "Authorization:$AUTH_HEADER"
                 '';

@@ -142,6 +142,8 @@ in
 
   features.development = {
     gremlinSkillsPath = "/home/dseymour/workspace/github.com/gremlin/gremlin-ai-skills";
+    # Try unmerged jig changes (EN-12001); drop this to go back to the main checkout.
+    gremlinSkillsMarketplacePath = "/home/dseymour/workspace/github.com/gremlin/gremlin-ai-skills/.claude/worktrees/en-12001-dev-lead";
     jiraEmail = "danny.seymour@gremlin.com";
     workSkills = [ "investigate-alert" "eng-private-edition" "eng-platform" "jig" ];
     mcp = {
