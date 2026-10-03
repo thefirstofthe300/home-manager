@@ -89,9 +89,8 @@ in
         Which MCP servers to enable, keyed by server name, overriding the defaults
         (kubernetes, todoist, github = true; nextcloud, circleci, serena, observe,
         jira = false). jira additionally requires gremlinSkillsPath to be set. github
-        is provided by the official github@claude-plugins-official plugin, which
-        authenticates against GitHub's hosted MCP endpoint using a personal access
-        token exported as GITHUB_PERSONAL_ACCESS_TOKEN.
+        connects to GitHub's hosted MCP endpoint through a wrapper that reads the
+        personal access token from the sops secret at launch.
       '';
     };
   };
@@ -152,9 +151,6 @@ in
             "gitops-skills@fluxcd" = true;
             "warp@claude-code-warp" = true;
             "mcp-apps@mcp-apps" = true;
-          }
-          // lib.optionalAttrs mcp.github {
-            "github@claude-plugins-official" = true;
           }
           // lib.optionalAttrs (cfg.gremlinSkillsPath != "") (
             lib.genAttrs (map (skill: "${skill}@gremlin-ai-skills") cfg.workSkills) (_: true)
@@ -253,6 +249,20 @@ in
                 name = "observe-mcp";
                 runtimeInputs = [ pkgs.nodejs ];
                 text = ''
+        // lib.optionalAttrs mcp.github {
+          github = {
+            command = lib.getExe (
+              pkgs.writeShellApplication {
+                name = "github-mcp";
+                runtimeInputs = [ pkgs.nodejs ];
+                text = ''
+                  GITHUB_TOKEN=$(cat ${lib.escapeShellArg config.sops.secrets.github-mcp-token.path})
+                  exec npx mcp-remote@latest "https://api.githubcopilot.com/mcp/" --header "Authorization:Bearer $GITHUB_TOKEN"
+                '';
+              }
+            );
+          };
+        }
                   AUTH_HEADER=$(cat ${lib.escapeShellArg config.sops.secrets.observe-auth-header.path})
                   exec npx mcp-remote@latest "https://136981668482.observeinc.com/v1/ai/mcp" --header "Authorization:$AUTH_HEADER"
                 '';
@@ -280,14 +290,6 @@ in
           };
         };
     };
-
-    # The github@claude-plugins-official plugin's bundled MCP server expands
-    # GITHUB_PERSONAL_ACCESS_TOKEN from the environment Claude Code inherits,
-    # so the token has to land in the shell rather than in a server command
-    # (which the plugin's checked-out .mcp.json isn't ours to template).
-    programs.zsh.initContent = lib.mkIf mcp.github ''
-      export GITHUB_PERSONAL_ACCESS_TOKEN="$(cat ${lib.escapeShellArg config.sops.secrets.github-mcp-token.path})"
-    '';
 
     home.packages = with pkgs; [
       beads
