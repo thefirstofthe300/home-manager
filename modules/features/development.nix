@@ -96,7 +96,7 @@ in
         Which MCP servers to enable, keyed by server name, overriding the defaults
         (kubernetes, todoist, github = true; nextcloud, circleci, serena, observe,
         jira = false). jira additionally requires gremlinSkillsPath to be set. github
-        connects to GitHub's hosted MCP endpoint through a wrapper that reads the
+        runs the local github-mcp-server over stdio through a wrapper that reads the
         personal access token from the sops secret at launch.
       '';
     };
@@ -250,14 +250,17 @@ in
           };
         }
         // lib.optionalAttrs mcp.github {
+          # Local stdio server rather than GitHub's hosted endpoint: the hosted server
+          # enforces Mcp-Param-* headers on MCP 2026-07-28 clients, and its version
+          # changes without notice. The version here only moves with the flake.
           github = {
             command = lib.getExe (
               pkgs.writeShellApplication {
                 name = "github-mcp";
-                runtimeInputs = [ pkgs.nodejs ];
                 text = ''
-                  GITHUB_TOKEN=$(cat ${lib.escapeShellArg config.sops.secrets.github-mcp-token.path})
-                  exec npx mcp-remote@latest "https://api.githubcopilot.com/mcp/" --header "Authorization:Bearer $GITHUB_TOKEN"
+                  GITHUB_PERSONAL_ACCESS_TOKEN=$(cat ${lib.escapeShellArg config.sops.secrets.github-mcp-token.path})
+                  export GITHUB_PERSONAL_ACCESS_TOKEN
+                  exec ${lib.getExe pkgs.github-mcp-server} stdio
                 '';
               }
             );
