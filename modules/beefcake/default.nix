@@ -142,8 +142,6 @@ in
 
   features.development = {
     gremlinSkillsPath = "/home/dseymour/workspace/github.com/gremlin/gremlin-ai-skills";
-    # Try unmerged jig changes (EN-12001); drop this to go back to the main checkout.
-    gremlinSkillsMarketplacePath = "/home/dseymour/workspace/github.com/gremlin/gremlin-ai-skills/.claude/worktrees/en-12001-dev-lead";
     jiraEmail = "danny.seymour@gremlin.com";
     workSkills = [ "investigate-alert" "eng-private-edition" "eng-platform" "jig" ];
     mcp = {
@@ -152,10 +150,6 @@ in
       circleci = true;
     };
   };
-
-  # Experimental: lets Claude Code spawn and coordinate multiple agent
-  # teammates within a session. Disabled by default upstream.
-  programs.claude-code.settings.env.CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS = "1";
 
   # Disable claude-mem-lite's automatic CLAUDE.md steering-block insertion
   # on SessionStart. This is a user preference, not a project one -- it
