@@ -46,7 +46,15 @@
         overlays = [
           (final: prev: {
             serena = serena.packages.${system}.serena;
-            claude-desktop = claude-desktop-debian.packages.${system}.claude-desktop;
+            # Pinned ahead of the upstream flake, which lags the official .deb
+            # release. Drop the override once claude-desktop-debian catches up.
+            claude-desktop = claude-desktop-debian.packages.${system}.claude-desktop.overrideAttrs (old: rec {
+              version = "2.26454.2";
+              src = final.fetchurl {
+                url = "https://downloads.claude.ai/claude-desktop/apt/stable/pool/main/c/claude-desktop/claude-desktop_${version}_amd64.deb";
+                hash = "sha256-slGgIkqGNYdPM1mN+O2JUrQn+EgV7llYDMAi1r2yQw8=";
+              };
+            });
             # nixpkgs-unstable lags the upstream claude-code release by a few
             # days; override to the latest release until nixpkgs catches up.
             # Bump version/checksum from https://downloads.claude.ai/claude-code-releases/latest
