@@ -60,14 +60,6 @@
                 };
               };
             };
-            # Unpatched nixpkgs regression breaks fixupPhase for any
-            # multi-output derivation without bin/include/lib outputs and no
-            # explicit propagatedBuildOutputs (bash word-splitting vs. array
-            # handling bug in multiple-outputs.sh's _multioutPropagateDev).
-            # Remove once upstream fixes pkgs/build-support/setup-hooks/multiple-outputs.sh.
-            regclient = prev.regclient.overrideAttrs (_old: {
-              propagatedBuildOutputs = "";
-            });
           })
         ];
       };
