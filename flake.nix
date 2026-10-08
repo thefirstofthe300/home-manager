@@ -46,24 +46,17 @@
         overlays = [
           (final: prev: {
             serena = serena.packages.${system}.serena;
-            # Pinned ahead of the upstream flake, which lags the official .deb
-            # release. Drop the override once claude-desktop-debian catches up.
-            claude-desktop = claude-desktop-debian.packages.${system}.claude-desktop.overrideAttrs (old: rec {
-              version = "2.26454.2";
-              src = final.fetchurl {
-                url = "https://downloads.claude.ai/claude-desktop/apt/stable/pool/main/c/claude-desktop/claude-desktop_${version}_amd64.deb";
-                hash = "sha256-slGgIkqGNYdPM1mN+O2JUrQn+EgV7llYDMAi1r2yQw8=";
-              };
-            });
-            # nixpkgs-unstable lags the upstream claude-code release by a few
-            # days; override to the latest release until nixpkgs catches up.
-            # Bump version/checksum from https://downloads.claude.ai/claude-code-releases/latest
+            claude-desktop = claude-desktop-debian.packages.${system}.claude-desktop;
+            # Pinned ahead of nixpkgs-unstable, which lags the upstream
+            # claude-code release. Drop once nixpkgs reaches this version.
+            # Checksum is of linux-x64/claude.zst under
+            # https://downloads.claude.ai/claude-code-releases/<version>/
             claude-code = prev.claude-code.override {
               manifest = {
-                version = "2.1.285";
+                version = "2.1.293";
                 platforms.linux-x64 = {
                   binary = "claude.zst";
-                  checksum = "e88a8b40ed5a7e9213bf5047f5b12c360c33387b1bc36cf79ddbff0a3a40121c";
+                  checksum = "25786da347c30641dc6c50733d090d77cb540f105a61af7e9895b56e39fe16a5";
                 };
               };
             };
