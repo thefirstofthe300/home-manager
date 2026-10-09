@@ -1,11 +1,13 @@
 ---
 name: end-of-day-status
-description: End-of-day sync — reviews today's work, drafts Jira ticket updates for review, generates tomorrow's priority list, and sends it to Slack. Use this skill when the user asks what they got done today, wants to update their Jira tickets, needs a summary for tomorrow, wants to send a standup/EOD update, or says anything like "wrap up the day", "end of day", "what did I do today", "update my tickets", or "send my priorities to Slack". Trigger proactively any time the conversation has covered significant work and the user seems to be wrapping up.
+description: End-of-day sync — reviews today's work, posts Jira ticket updates, generates tomorrow's priority list, and sends it to Slack. Runs unattended with no approval prompts. Use this skill when the user asks what they got done today, wants to update their Jira tickets, needs a summary for tomorrow, wants to send a standup/EOD update, or says anything like "wrap up the day", "end of day", "what did I do today", "update my tickets", or "send my priorities to Slack". Trigger proactively any time the conversation has covered significant work and the user seems to be wrapping up.
 ---
 
 # End-of-Day Sync
 
-Automates the end-of-day workflow: review today's work → draft Jira updates → get approval → post → summarize tomorrow → send to Slack.
+Automates the end-of-day workflow: review today's work → post Jira updates → summarize tomorrow → send to Slack.
+
+**This skill runs unattended.** Never ask the user a question, never wait for confirmation, and never stop to present drafts. Make the call yourself and act. If a step fails, log the failure, skip that item, and keep going — one broken ticket must not block the standup. End with a short plain-text report of what was posted and what was skipped or failed.
 
 ## Step 1 — Gather today's work
 
@@ -37,15 +39,11 @@ Search for all tickets assigned to the current user that aren't done:
 JQL: assignee = currentUser() AND statusCategory != Done ORDER BY updated DESC
 ```
 
-Use `mcp__plugin_claude-code-home-manager_jira-mcp__jira_search_issues` (max 25). Then read full details for the tickets that are active or recently touched — skip anything stale (no updates in several weeks) unless it's obviously relevant to today's work.
+Use `mcp__plugin_hm_jira-mcp__jira_search_issues` (max 25). Then read full details for the tickets that are active or recently touched — skip anything stale (no updates in several weeks) unless it's obviously relevant to today's work.
 
 ## Step 3 — Check open PR statuses
 
-Find all PRs referenced in today's observations or open Jira tickets. For each, run:
-
-```
-gh pr view <number> --repo <org/repo> --json state,title,reviews,mergedAt,url
-```
+Find all PRs referenced in today's observations or open Jira tickets. For each, fetch state, title, reviews, merged time, and URL with `mcp__plugin_hm_github__pull_request_read`. Fall back to `gh pr view <number> --repo <org/repo> --json state,title,reviews,mergedAt,url` only if the MCP call fails.
 
 Run all lookups in parallel. Summarize results as a table:
 
@@ -55,9 +53,9 @@ Run all lookups in parallel. Summarize results as a table:
 
 Note which PRs have merged (relevant to Jira comment and transition drafts in the next step) and which are still open with or without reviews (feeds into tomorrow's priorities).
 
-## Step 4 — Draft Jira updates
+## Step 4 — Write Jira updates
 
-For each ticket where today's work is relevant, draft a single cohesive comment that synthesizes what was accomplished and the current PR state into one natural narrative — not two separate blocks. The PR status is context that shapes how you describe the work, not a separate item to append.
+For each ticket where today's work is relevant, write a single cohesive comment that synthesizes what was accomplished and the current PR state into one natural narrative — not two separate blocks. The PR status is context that shapes how you describe the work, not a separate item to append.
 
 Good: "Completed the OpenTelemetry Operator and Collector deployment for gremlin-ai — operator uses cert-manager managed webhook TLS, collector runs as a DaemonSet with OTLP receivers and Kubernetes metadata enrichment. PR #1082 is open and awaiting first review."
 
@@ -68,23 +66,18 @@ Keep comments:
 - **Brief**: 2–4 sentences max
 - **Cohesive**: one narrative, not labelled sections
 
-Also flag any tickets where the **status looks stale or wrong**. For tickets whose PR merged, include that in the comment and propose transitioning the ticket to Done.
+## Step 5 — Post comments and transitions
 
-Present all drafts to the user before posting anything. Format like:
+Post without asking.
 
----
-**EN-XXXXX** — [Ticket title]
-> [Draft comment text]
+**Avoid duplicates.** Before commenting on a ticket, read it with `mcp__plugin_hm_jira-mcp__jira_read_issue` and skip it if the current user already left a comment today. This makes a re-run safe.
 
----
+Post each comment with `mcp__plugin_hm_jira-mcp__jira_add_comment`. Only comment on tickets that Step 1 tied to today's work — never comment on a ticket just because it is open.
 
-Ask: "Ready to post these, or any changes?" Do not post until the user confirms.
-
-## Step 5 — Post approved comments
-
-Once the user approves, post each comment using `mcp__plugin_claude-code-home-manager_jira-mcp__jira_add_comment`.
-
-Then address any stale status flags: for each one, use `mcp__plugin_claude-code-home-manager_jira-mcp__jira_list_transitions` to see available transitions, propose the right one, and ask for confirmation before applying it via `mcp__plugin_claude-code-home-manager_jira-mcp__jira_transition_issue`.
+**Transitions.** Apply a transition only when it is unambiguous:
+- If every PR linked to the ticket has merged, call `mcp__plugin_hm_jira-mcp__jira_list_transitions` and apply the Done/Resolved transition with `mcp__plugin_hm_jira-mcp__jira_transition_issue`.
+- If the ticket is in a not-started state (e.g., Backlog, To Do) but work happened today, transition it to the in-progress state.
+- For anything else — stale-looking tickets, blocked or redundant tickets, a transition name that does not clearly match — leave the status alone and list the ticket under *Skipped* in the final report.
 
 ## Step 6 — Generate tomorrow's priorities
 
@@ -98,7 +91,9 @@ Keep it to 4–6 bullet points. Be specific about the action, not just the ticke
 
 ## Step 7 — Send to Slack
 
-Send a standup-style summary to the user via Slack DM using `mcp__plugin_claude_ai_Slack__slack_send_message` with `channel_id: U03BZF4FQ0K`.
+Send a standup-style summary to the user via Slack DM using `mcp__plugin_slack_slack__slack_send_message` with `channel_id: U03BZF4FQ0K`. Send it directly — do not save a draft.
+
+If Step 1 found no ticket- or PR-linked work, skip the Slack message and say so in the final report rather than sending an empty standup.
 
 Format the message as a classic standup update with three sections:
 
@@ -120,11 +115,10 @@ Rules for standup format:
 - Keep the whole message under 15 lines; if there's more to say, trim ruthlessly
 - Use Slack `*bold*` for section headers, plain `-` or `•` for bullets
 
-If Slack isn't authenticated, prompt the user to authenticate and wait for confirmation before proceeding.
+If the Slack send fails (including because Slack isn't authenticated), do not retry in a loop and do not wait for the user. Print the full standup text in the final report along with the error so nothing is lost.
 
 ## Tone and style
 
-- Conversational at review steps — always pause and wait for user approval before posting or making transitions
-- Autonomous for read-only steps — don't ask permission to read tickets or observations
+- Fully autonomous — never pause for approval, never ask questions
 - No implementation details in Jira comments (no namespace names, service URLs, config values, etc.)
-- Status transitions are low-risk but still confirm before applying
+- Be conservative with writes: only comment on tickets tied to today's work, and only transition when the rule in Step 5 clearly applies
