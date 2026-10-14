@@ -1,5 +1,5 @@
 {
-  "skill_name": "doc-editing",
+  "skill_name": "writing",
   "evals": [
     {
       "id": 1,
@@ -59,6 +59,30 @@
       "id": 10,
       "prompt": "Here's a sentence from our runbook: \"If the primary fails over, page Marcus — he owns the replication config.\" Anything wrong with it?",
       "expected_output": "Flags the use of a real person's name, and gives the reason: it reads as a requirement to involve that specific person, and it goes stale when they change roles or leave. Recommends a role or a rota instead, such as the on-call database engineer. May also note the em dash. Must NOT treat naming a colleague as acceptable because it is accurate today.",
+      "files": []
+    },
+    {
+      "id": 11,
+      "prompt": "Audit the comments in this Go snippet:\n\n// ---------- helpers ----------\n\n// Added retry logic for EN-1234. This function now retries the\n// request up to three times because the upstream returns 503\n// under load, and we saw this in production on 2026-03-02.\nfunc fetch(c *Client) error {\n\t// loop over attempts\n\tfor i := 0; i < 3; i++ {\n\t\t// call the upstream\n\t\terr := c.do()\n\t\t//nolint:errcheck\n\t\tdefer c.close()\n\t\t// TODO fix this\n\t}\n\treturn nil\n}",
+      "expected_output": "Reports findings as path:line, rule, concrete fix rather than rewriting unprompted. Flags the banner, the 'Added'/'now' change narration and the ticket reference as history that belongs in the commit, 'loop over attempts' and 'call the upstream' as restating the code, and the ownerless TODO. Recognises that the 503-under-load explanation is the one real why-comment and recommends keeping it, shortened to one or two lines. Leaves the nolint directive alone. Must NOT flag every comment for deletion, and must NOT edit the code without asking.",
+      "files": []
+    },
+    {
+      "id": 12,
+      "prompt": "Review this README for readability:\n\n# 🚀 Widget CLI\n\n## Overview\n\n**Widget** is a **powerful** tool. It is **fast**.\n\n---\n\n## Installation\n\n- **Step 1:** Install\n  - **Homebrew:** `brew install widget`\n  - **Cargo:** `cargo install widget`\n\n## Usage\n\n> **Note:** Run `widget --help`.\n\n## Conclusion\n\nWidget is the future of widgets.",
+      "expected_output": "Identifies the structural problems: a heading on every two-line section, emoji in the title, bold on nearly every phrase, a nested bullet list for what is two install commands, a horizontal rule, a blockquote callout for a one-line instruction, and generic 'Overview' and 'Conclusion' headings. Recommends a short prose-first README that leads with what it does and how to install it, and says the conclusion should go. Must NOT merely suggest swapping individual words and leave the structure intact.",
+      "files": []
+    },
+    {
+      "id": 13,
+      "prompt": "Just flag the AI patterns in this, don't rewrite it: \"In today's rapidly evolving landscape, we leverage a robust, seamless pipeline — it truly serves as a game-changer. Great question! The future looks bright.\"",
+      "expected_output": "Uses detect mode: lists the flagged patterns with the offending text quoted, grouped by severity, and does not produce a rewritten version. Calls out the chatbot phrasing ('Great question!') as a top-severity item, and also catches the formulaic opening, the em dash, leverage/robust/seamless/game-changer, 'serves as' and the generic conclusion. Includes a short assessment separating clear problems from judgment calls. Must NOT rewrite the text.",
+      "files": []
+    },
+    {
+      "id": 14,
+      "prompt": "Write a README for the three-function helper package I just added.",
+      "expected_output": "Writes a short README, a few lines to a screen, that leads with what the package does and a single usage example. Uses prose, no nested bullets, no bold labels, no emoji, no horizontal rules, no callouts and no em dashes, and does not list the functions in a parameter table the code already shows. Must NOT produce a multi-section document with Overview, Features and Conclusion headings, and must NOT also create a summary or changelog file.",
       "files": []
     }
   ]
