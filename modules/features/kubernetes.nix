@@ -10,7 +10,6 @@
   config = lib.mkIf config.features.kubernetes.enable {
     home.packages = with pkgs; [
       (lib.hiPrio kubectl)
-      kubernetes-helm
       fluxcd
       kind
       minikube

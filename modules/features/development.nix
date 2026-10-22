@@ -56,6 +56,16 @@ let
         --zsh <(HOME=$TMPDIR $out/bin/circleci completion zsh --skip-update-check)
     '';
   });
+  helm-schema = pkgs.kubernetes-helmPlugins.helm-schema.overrideAttrs (old: rec {
+    version = "2.2.0";
+    src = pkgs.fetchFromGitHub {
+      owner = "losisin";
+      repo = "helm-values-schema-json";
+      tag = "v${version}";
+      hash = "sha256-CiH3N/Ji4KaJheqI0aTkt3GkJgalREAZgOfVM48oI2g=";
+    };
+    vendorHash = "sha256-yp1zcMa3rXC0M5Kww4VAY2sRFKkb2rKcOYkoLRlfgt4=";
+  });
 in
 {
   options.features.development = {
@@ -317,6 +327,7 @@ in
       pre-commit
       commitizen
       circleci-cli
+      (wrapHelm kubernetes-helm { plugins = [ helm-schema ]; })
       gh
       yq
       kubeconform
