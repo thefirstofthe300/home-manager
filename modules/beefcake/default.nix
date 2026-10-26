@@ -192,10 +192,6 @@ in
     };
   };
 
-  xdg.autostart.entries = [
-    "/home/dseymour/.local/share/flatpak/exports/share/applications/im.riot.Riot.desktop"
-  ];
-
   services = {
     flatpak = {
       enable = true;
@@ -210,7 +206,6 @@ in
         "com.spotify.Client"
         "com.github.tchx84.Flatseal"
         "net.nokyan.Resources"
-        "im.riot.Riot"
         "com.fastmail.Fastmail"
       ];
     };

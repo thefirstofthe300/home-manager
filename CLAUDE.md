@@ -56,7 +56,7 @@ Current features: `kubernetes`, `cloud`, `development`, `sbom`, `local-llm`, `vl
 ### Host Differences
 
 - **beefcake** (work): All features enabled, NVIDIA GPU with CUDA, `targets.genericLinux.gpu`, nix GC, Slack/Fastmail flatpaks, vllm
-- **falcon** (personal): All four features enabled, krew for kubectl plugins, Riot flatpak
+- **falcon** (personal): All four features enabled, krew for kubectl plugins
 - **iron-man** (personal): `development` feature only, GNOME dconf theme settings
 
 ### Flake Inputs
