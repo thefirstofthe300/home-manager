@@ -270,7 +270,7 @@ in
                 text = ''
                   GITHUB_PERSONAL_ACCESS_TOKEN=$(cat ${lib.escapeShellArg config.sops.secrets.github-mcp-token.path})
                   export GITHUB_PERSONAL_ACCESS_TOKEN
-                  exec ${lib.getExe pkgs.github-mcp-server} stdio
+                  exec ${lib.getExe pkgs.github-mcp-server} stdio --features mcp_apps_disable_form_deferral
                 '';
               }
             );
