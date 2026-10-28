@@ -5,3 +5,4 @@
 @rules/serena.md
 @rules/communication.md
 @rules/github.md
+@rules/adhd-mode.md
