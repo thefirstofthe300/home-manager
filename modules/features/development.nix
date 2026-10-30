@@ -19,6 +19,16 @@ let
   # `//` right-biases onto mcpDefaults so hosts only need to override the keys
   # they care about; attrsOf's own `default` does not merge with definitions.
   mcp = mcpDefaults // cfg.mcp;
+  # Claude Code registers a directory marketplace by path, so a fixed link lets
+  # its target change without re-registering the marketplace.
+  marketplaceLink = "${config.home.homeDirectory}/.claude/gremlin-ai-skills-marketplace";
+  marketplaceTarget =
+    if cfg.gremlinSkillsMarketplacePath != null then
+      config.lib.file.mkOutOfStoreSymlink cfg.gremlinSkillsMarketplacePath
+    else if cfg.gremlinSkillsSource != null then
+      cfg.gremlinSkillsSource
+    else
+      config.lib.file.mkOutOfStoreSymlink cfg.gremlinSkillsPath;
   # uvx wrapper that injects libstdc++ and zlib only when spawning chroma-mcp,
   # so the Nix python3.13 linker can find them without polluting the global env.
   uvxChromaWrapper = pkgs.writeShellScriptBin "uvx" ''
@@ -77,11 +87,16 @@ in
       description = "Absolute path to a local gremlin-ai-skills checkout. Enables the gremlin-ai-skills marketplace when non-empty, and (together with mcp.jira) the jira-mcp server.";
     };
 
+    gremlinSkillsSource = lib.mkOption {
+      type = lib.types.nullOr lib.types.path;
+      default = null;
+      description = "Pinned checkout of the gremlin-ai-skills repository (a flake input), loaded as the marketplace unless gremlinSkillsMarketplacePath overrides it.";
+    };
+
     gremlinSkillsMarketplacePath = lib.mkOption {
-      type = lib.types.str;
-      default = cfg.gremlinSkillsPath;
-      defaultText = lib.literalExpression "config.features.development.gremlinSkillsPath";
-      description = "Directory the gremlin-ai-skills marketplace is loaded from. Defaults to gremlinSkillsPath; point it at a worktree to try unmerged plugin changes without moving the jira-mcp server.";
+      type = lib.types.nullOr lib.types.str;
+      default = null;
+      description = "Live directory to load the marketplace from instead of gremlinSkillsSource, to try plugin changes without a commit and lock bump. With neither set, gremlinSkillsPath is used. Claude Code reads the marketplace through a fixed symlink at ~/.claude/gremlin-ai-skills-marketplace, so after a switch /reload-plugins picks up the change without a restart.";
     };
 
     jiraEmail = lib.mkOption {
@@ -129,6 +144,10 @@ in
           sopsFile = ../../secrets/common.yaml;
         };
       };
+
+    home.file.".claude/gremlin-ai-skills-marketplace" = lib.mkIf (cfg.gremlinSkillsPath != "") {
+      source = marketplaceTarget;
+    };
 
     programs = {
       claude-code = {
@@ -202,7 +221,7 @@ in
             "gremlin-ai-skills" = {
               "source" = {
                 "source" = "directory";
-                "path" = cfg.gremlinSkillsMarketplacePath;
+                "path" = marketplaceLink;
               };
             };
           };

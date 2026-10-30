@@ -2,6 +2,7 @@
   pkgs,
   lib,
   config,
+  gremlin-ai-skills,
   ...
 }:
 let
@@ -142,6 +143,7 @@ in
 
   features.development = {
     gremlinSkillsPath = "/home/dseymour/workspace/github.com/gremlin/gremlin-ai-skills";
+    gremlinSkillsSource = gremlin-ai-skills;
     jiraEmail = "danny.seymour@gremlin.com";
     workSkills = [ "investigate-alert" "oncall-journal" "eng-private-edition" "eng-platform" "jig" ];
     mcp = {
