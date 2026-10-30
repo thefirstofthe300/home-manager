@@ -27,9 +27,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     # Local clone, so the private repo needs no token; flake.lock pins the commit.
-    # To follow new commits: `git fetch origin` in the clone, then `nix flake update gremlin-ai-skills`.
+    # To follow new commits: `nix flake update gremlin-ai-skills` (after `git fetch origin`
+    # in the clone when ref is a remote-tracking branch).
     gremlin-ai-skills = {
-      url = "git+file:///home/dseymour/workspace/github.com/gremlin/gremlin-ai-skills?ref=refs/remotes/origin/main";
+      url = "git+file:///home/dseymour/workspace/github.com/gremlin/gremlin-ai-skills?ref=EN-12184/requirements-from-ticket";
       flake = false;
     };
   };

@@ -80,14 +80,14 @@
       "locked": {
         "lastModified": 1793228548,
         "narHash": "sha256-EYN4Iz+opOrx+vL55Uqag8aLvCYNxf2lTlVrokzLDBc=",
-        "ref": "refs/remotes/origin/main",
+        "ref": "EN-12184/requirements-from-ticket",
         "rev": "f96cada72736b569409437b65ca6a2df1165a194",
         "revCount": 149,
         "type": "git",
         "url": "file:///home/dseymour/workspace/github.com/gremlin/gremlin-ai-skills"
       },
       "original": {
-        "ref": "refs/remotes/origin/main",
+        "ref": "EN-12184/requirements-from-ticket",
         "type": "git",
         "url": "file:///home/dseymour/workspace/github.com/gremlin/gremlin-ai-skills"
       }
