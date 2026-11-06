@@ -75,23 +75,6 @@
         "type": "github"
       }
     },
-    "gremlin-ai-skills": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1793403960,
-        "narHash": "sha256-87iMs2KPBpm/SqzxHzdKvWJCv0yNnb1nbES89meIXDc=",
-        "ref": "EN-12184/requirements-from-ticket",
-        "rev": "2894ef3e658f0084df48258c8df3dd1ee8735edf",
-        "revCount": 151,
-        "type": "git",
-        "url": "file:///home/dseymour/workspace/github.com/gremlin/gremlin-ai-skills"
-      },
-      "original": {
-        "ref": "EN-12184/requirements-from-ticket",
-        "type": "git",
-        "url": "file:///home/dseymour/workspace/github.com/gremlin/gremlin-ai-skills"
-      }
-    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -248,7 +231,6 @@
     "root": {
       "inputs": {
         "claude-desktop-debian": "claude-desktop-debian",
-        "gremlin-ai-skills": "gremlin-ai-skills",
         "home-manager": "home-manager",
         "nix-flatpak": "nix-flatpak",
         "nixgl": "nixgl",

@@ -26,13 +26,6 @@
       url = "github:aaddrick/claude-desktop-debian";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # Local clone, so the private repo needs no token; flake.lock pins the commit.
-    # To follow new commits: `nix flake update gremlin-ai-skills` (after `git fetch origin`
-    # in the clone when ref is a remote-tracking branch).
-    gremlin-ai-skills = {
-      url = "git+file:///home/dseymour/workspace/github.com/gremlin/gremlin-ai-skills?ref=EN-12184/requirements-from-ticket";
-      flake = false;
-    };
   };
 
   outputs =
@@ -44,7 +37,6 @@
       sops-nix,
       serena,
       claude-desktop-debian,
-      gremlin-ai-skills,
       ...
     }:
     let
@@ -90,7 +82,7 @@
         "dseymour@beefcake" = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
 
-          extraSpecialArgs = { inherit nixgl sops-nix gremlin-ai-skills; };
+          extraSpecialArgs = { inherit nixgl sops-nix; };
 
           modules = [
             ./modules/beefcake

@@ -2,7 +2,6 @@
   pkgs,
   lib,
   config,
-  gremlin-ai-skills,
   ...
 }:
 let
@@ -143,7 +142,13 @@ in
 
   features.development = {
     gremlinSkillsPath = "/home/dseymour/workspace/github.com/gremlin/gremlin-ai-skills";
-    gremlinSkillsSource = gremlin-ai-skills;
+    # Fetched here, not as a flake input, so other hosts never need the local clone.
+    # Bump by editing rev (after `git fetch origin` in the clone).
+    gremlinSkillsSource = builtins.fetchGit {
+      url = "file:///home/dseymour/workspace/github.com/gremlin/gremlin-ai-skills";
+      ref = "EN-12184/requirements-from-ticket";
+      rev = "2894ef3e658f0084df48258c8df3dd1ee8735edf";
+    };
     jiraEmail = "danny.seymour@gremlin.com";
     workSkills = [ "investigate-alert" "oncall-journal" "eng-private-edition" "eng-platform" "jig" ];
     mcp = {
