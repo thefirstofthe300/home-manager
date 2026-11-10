@@ -339,7 +339,6 @@ in
       golangci-lint
       python3
       cargo
-      cargo-lambda
       protobuf
       ripgrep
       goreleaser
@@ -354,7 +353,6 @@ in
       nodejs
       pnpm
       kyverno-chainsaw
-      rabbitmqadmin-ng
       rustc
       shellcheck
       yamllint
