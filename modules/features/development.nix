@@ -330,6 +330,8 @@ in
         };
     };
 
+    home.sessionVariables.RUST_SRC_PATH = "${pkgs.rustPlatform.rustLibSrc}";
+
     home.packages = with pkgs; [
       beads
       cobra-cli
@@ -354,6 +356,9 @@ in
       pnpm
       kyverno-chainsaw
       rustc
+      clippy
+      rustfmt
+      rust-analyzer
       shellcheck
       yamllint
     ];
