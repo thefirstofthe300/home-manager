@@ -21,7 +21,7 @@
 
       shellAliases = {
         ll = "ls -l";
-        nixup = "home-manager switch";
+        nixup = "home-manager switch --flake ${config.xdg.configHome}/home-manager#dseymour@$(hostname)";
       };
       history = {
         size = 10000;
