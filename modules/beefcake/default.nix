@@ -144,13 +144,32 @@ in
     gremlinSkillsPath = "/home/dseymour/workspace/github.com/gremlin/gremlin-ai-skills";
     # Fetched here, not as a flake input, so other hosts never need the local clone.
     # Bump by editing rev (after `git fetch origin` in the clone).
-    gremlinSkillsSource = builtins.fetchGit {
-      url = "file:///home/dseymour/workspace/github.com/gremlin/gremlin-ai-skills";
-      ref = "EN-12184/requirements-from-ticket";
-      rev = "2894ef3e658f0084df48258c8df3dd1ee8735edf";
-    };
+    gremlinSkillsSource =
+      let
+        clone = "file:///home/dseymour/workspace/github.com/gremlin/gremlin-ai-skills";
+        jig = builtins.fetchGit {
+          url = clone;
+          ref = "EN-12184/requirements-from-ticket";
+          rev = "2894ef3e658f0084df48258c8df3dd1ee8735edf";
+        };
+        jigV2 = builtins.fetchGit {
+          url = clone;
+          ref = "jig-v2/first-build";
+          rev = "fdf852c0da0369bd67ef7778edc23006fe7b9be5";
+        };
+      in
+      # jig-v2 is on its own branch, so lay its plugin and marketplace entry over the jig pin and
+      # leave jig as it is. Drop this once jig-v2 is merged and one pin carries both.
+      pkgs.runCommand "gremlin-ai-skills-with-jig-v2" { nativeBuildInputs = [ pkgs.jq ]; } ''
+        cp -r ${jig} $out
+        chmod -R u+w $out
+        cp -r ${jigV2}/ENG/jig-v2 $out/ENG/jig-v2
+        jq --slurpfile v2 ${jigV2}/.claude-plugin/marketplace.json \
+          '.plugins += ($v2[0].plugins | map(select(.name == "jig-v2")))' \
+          ${jig}/.claude-plugin/marketplace.json > $out/.claude-plugin/marketplace.json
+      '';
     jiraEmail = "danny.seymour@gremlin.com";
-    workSkills = [ "investigate-alert" "oncall-journal" "eng-private-edition" "eng-platform" "jig" ];
+    workSkills = [ "investigate-alert" "oncall-journal" "eng-private-edition" "eng-platform" "jig" "jig-v2" ];
     mcp = {
       observe = true;
       jira = true;
