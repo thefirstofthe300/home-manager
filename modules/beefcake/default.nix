@@ -155,7 +155,7 @@ in
         jigV2 = builtins.fetchGit {
           url = clone;
           ref = "jig-v2/first-build";
-          rev = "fdf852c0da0369bd67ef7778edc23006fe7b9be5";
+          rev = "41ac4fb1ca3275adc1af3f4a9af9a77de5fe7567";
         };
       in
       # jig-v2 is on its own branch, so lay its plugin and marketplace entry over the jig pin and
